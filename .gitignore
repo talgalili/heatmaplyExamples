@@ -1,4 +1,13 @@
 .Rproj.user
 .Rhistory
 .RData
-.Ruserdata
+TODO.txt
+lib
+*.html
+vignettes/.build.timestamp
+*.jpeg
+GDC*
+MANIFEST.txt
+*.gz
+Makefile
+test2.rda
