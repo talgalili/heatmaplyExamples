@@ -1,5 +1,6 @@
 ## ---- echo = FALSE, message = FALSE--------------------------------------
 library(heatmaply)
+library(heatmaplyExamples)
 library(knitr)
 knitr::opts_chunk$set(
    # cache = TRUE,
@@ -8,204 +9,39 @@ knitr::opts_chunk$set(
   tidy = FALSE)
 
 
-## ---- echo=FALSE---------------------------------------------------------
-
-pam50_genes <- c(
-    'ACTR3B', 
-    'ANLN', 
-    'BAG1', 
-    'BCL2', 
-    'BIRC5', 
-    'BLVRA', 
-    'CCNB1', 
-    'CCNE1', 
-    'CDC20', 
-    'CDC6', 
-    'CDH3', 
-    'CENPF', 
-    'CEP55', 
-    'CXXC5', 
-    'EGFR', 
-    'ERBB2', 
-    'ESR1', 
-    'EXO1', 
-    'FGFR4', 
-    'FOXA1', 
-    'FOXC1', 
-    'GPR160', 
-    'GRB7', 
-    'KIF2C', 
-    'KRT14', 
-    'KRT17', 
-    'KRT5', 
-    'MAPT', 
-    'MDM2', 
-    'MELK', 
-    'MIA', 
-    'MKI67', 
-    'MLPH', 
-    'MMP11', 
-    'MYBL2', 
-    'MYC', 
-    'NAT1', 
-    'NDC80', 
-    'NUF2', 
-    'ORC6L', 
-    'PGR', 
-    'PHGDH', 
-    'PTTG1', 
-    'RRM2', 
-    'SFRP1', 
-    'SLC39A6', 
-    'TMEM45B', 
-    'TYMS', 
-    'UBE2C', 
-    'UBE2T'
-)
-
-## ---- eval=FALSE---------------------------------------------------------
-#  ## This script downloads the expression data for all breast cancer samples
-#  ## from GDC/TCGA, and filters them to have only the genes in the
-#  ## PAM50 gene set
-#  
-#  library('TCGAbiolinks')
-#  library('SummarizedExperiment')
-#  library('biomaRt')
-#  library('voom')
-#  
-#  
-#  query <- GDCquery(project = 'TCGA-BRCA',
-#      data.category = 'Transcriptome Profiling',
-#      data.type = 'Gene Expression Quantification',
-#      workflow.type = 'HTSeq - Counts'
-#  )
-#  
-#  GDCdownload(query)
-#  data <- GDCprepare(query)
-#  
-#  mart <- useDataset('hsapiens_gene_ensembl', useMart('ensembl'))
-#  
-#  genes <- rownames(data)
-#  symbols <- getBM(filters= 'ensembl_gene_id',
-#      attributes= c('ensembl_gene_id','hgnc_symbol'),
-#      values = genes,
-#      mart= mart)
-#  
-#  ind_nchar <- as.logical(nchar(symbols[['hgnc_symbol']]))
-#  symbols <- symbols[ind_nchar, ]
-#  data <- data[symbols[['ensembl_gene_id']], ]
-#  rownames(data) <- symbols[['hgnc_symbol']]
-#  
-#  ind_tumor <- colData(data)[['definition']]== 'Primary solid Tumor'
-#  data <- data[, ind_tumor]
-#  
-#  pam50_genes <- c(
-#      'ACTR3B',
-#      'ANLN',
-#      'BAG1',
-#      'BCL2',
-#      'BIRC5',
-#      'BLVRA',
-#      'CCNB1',
-#      'CCNE1',
-#      'CDC20',
-#      'CDC6',
-#      'CDH3',
-#      'CENPF',
-#      'CEP55',
-#      'CXXC5',
-#      'EGFR',
-#      'ERBB2',
-#      'ESR1',
-#      'EXO1',
-#      'FGFR4',
-#      'FOXA1',
-#      'FOXC1',
-#      'GPR160',
-#      'GRB7',
-#      'KIF2C',
-#      'KRT14',
-#      'KRT17',
-#      'KRT5',
-#      'MAPT',
-#      'MDM2',
-#      'MELK',
-#      'MIA',
-#      'MKI67',
-#      'MLPH',
-#      'MMP11',
-#      'MYBL2',
-#      'MYC',
-#      'NAT1',
-#      'NDC80',
-#      'NUF2',
-#      'ORC6L',
-#      'PGR',
-#      'PHGDH',
-#      'PTTG1',
-#      'RRM2',
-#      'SFRP1',
-#      'SLC39A6',
-#      'TMEM45B',
-#      'TYMS',
-#      'UBE2C',
-#      'UBE2T'
-#  )
-#  
-#  pam50_genes <- intersect(pam50_genes, symbols[['hgnc_symbol']])
-#  
-#  clinical_cols <- c('subtype_ER.Status', 'subtype_PR.Status',
-#      'subtype_HER2.Final.Status',
-#      'subtype_Integrated.Clusters..with.PAM50.'
-#  )
-#  
-#  subtypes <- colData(data)[, clinical_cols]
-#  ind_has_subtypes <- sapply(seq_len(nrow(subtypes)), function(i) {
-#      all(!is.na(subtypes[i, ]))
-#  })
-#  
-#  
-#  data <- data[, ind_has_subtypes]
-#  
-#  tcga_brca_clinical <- colData(data)
-#  tcga_brca_clinical <- tcga_brca_clinical[, clinical_cols]
-#  colnames(tcga_brca_clinical) <- gsub('subtype_', '', colnames(tcga_brca_clinical))
-#  
-#  stypes <- c('ER.Status', 'PR.Status', 'HER2.Final.Status')
-#  
-#  tcga_brca_clinical[, stypes] <- lapply(tcga_brca_clinical[, stypes],
-#      function(col) {
-#          col <- as.character(col)
-#          ifelse(col %in% c('Positive', 'Negative'), col, NA)
-#      }
-#  )
-#  
-#  
-#  tcga_brca_clinical <- as.data.frame(tcga_brca_clinical)
-#  expression <- assay(data, 'HTSeq - Counts')
-#  expression <- expression[!duplicated(rownames(expression)), ]
-#  voomed_expression <- as.matrix(voom(expression))[pam50_genes, ]
-#  raw_expression <- expression[pam50_genes, ]
-
 ## ------------------------------------------------------------------------
 cor_mat_raw_logged <- cor(log2(raw_expression + 0.5))
-dimnames(cor_mat_raw_logged) <- NULL
 
 heatmaply(cor_mat_raw_logged, 
     main = 'log2 Count data correlation',
-    plot_method = 'plotly',
-    row_side_colors=tcga_brca_clinical)
+    showticklabels = c(FALSE, FALSE),
+    row_side_colors=tcga_brca_clinical,
+    plot_method = 'plotly')
 
 
 ## ------------------------------------------------------------------------
 
 cor_mat_voomed <- cor(voomed_expression)
-dimnames(cor_mat_voomed) <- NULL
 
 heatmaply(cor_mat_voomed, 
     main = 'log2 cpm data correlation',
-    plot_method = 'plotly',
-    row_side_colors=tcga_brca_clinical)
+    showticklabels = c(FALSE, FALSE),
+    row_side_colors=tcga_brca_clinical,
+    plot_method = 'plotly')
+
+
+tmp <- voomed_expression
+tmp[, 1] <- tmp[, 1] <- rnorm(nrow(tmp), 100, 20)
+
+
+heatmaply(cor(voomed_expression), 
+    row_side_colors=tcga_brca_clinical,
+    showticklabels = c(FALSE, FALSE),
+    main = 'Outlier on correlation matrix',
+    col = gplots::bluered(50),
+    limits = c(-1, 1),
+    plot_method = 'plotly')
+
 
 
 ## ------------------------------------------------------------------------
@@ -213,23 +49,55 @@ pam50_genes <- intersect(pam50_genes, rownames(raw_expression))
 raw_pam50_expression <- raw_expression[pam50_genes, ]
 voomed_pam50_expression <- voomed_expression[pam50_genes, ]
 
-## ------------------------------------------------------------------------
 center_raw_mat <- log2(raw_pam50_expression + 0.5) - 
-  apply(log2(raw_pam50_expression + 0.5), 1, median)
-colnames(center_raw_mat) <- NULL
-heatmaply(t(center_raw_mat), row_side_colors=tcga_brca_clinical,
-  main = 'raw centered pam50')
+    apply(log2(raw_pam50_expression + 0.5), 1, median)
 
-heatmaply(cor(center_raw_mat), row_side_colors=tcga_brca_clinical,
-  main = 'correlation of raw centered pam50')
+raw_max <- max(abs(center_raw_mat), na.rm=TRUE)
+raw_limits <- c(-raw_max, raw_max)
+
+
+heatmaply(t(center_raw_mat), 
+    row_side_colors=tcga_brca_clinical,
+    showticklabels = c(TRUE, FALSE),
+    col = gplots::bluered(50),
+    main = 'raw centered pam50',
+    limits = raw_limits,
+    plot_method = 'plotly')
+
+
+heatmaply(cor(center_raw_mat), 
+    row_side_colors=tcga_brca_clinical,
+    showticklabels = c(FALSE, FALSE),
+    main = 'correlation of raw centered pam50',
+    limits = c(-1, 1),
+    col = gplots::bluered(50),
+    plot_method = 'plotly')
 
 
 center_voom_mat <- voomed_pam50_expression - 
-  apply(voomed_pam50_expression, 1, median)
-colnames(center_voom_mat) <- NULL
-heatmaply(t(center_voom_mat), row_side_colors=tcga_brca_clinical,
-  main = 'voomed pam50')
-heatmaply(cor(center_voom_mat), row_side_colors=tcga_brca_clinical,
-  main = 'correlation of voomed pam50')
+    apply(voomed_pam50_expression, 1, median)
+
+voom_max <- max(abs(center_voom_mat))
+voom_limits <- c(-voom_max, voom_max)
+
+
+heatmaply(t(center_voom_mat), 
+    row_side_colors=tcga_brca_clinical,
+    showticklabels = c(TRUE, FALSE),
+    col = gplots::bluered(50),
+    limits = voom_limits,
+    main = 'voomed pam50',
+    plot_method = 'plotly')
+
+
+heatmaply(cor(center_voom_mat), 
+    row_side_colors=tcga_brca_clinical,
+    showticklabels = c(FALSE, FALSE),
+    main = 'correlation of voomed pam50',
+    col = gplots::bluered(50),
+    limits = c(-1, 1),
+    plot_method = 'plotly')
+
+
 
 
