@@ -32,6 +32,11 @@ knitr::opts_chunk$set(
 ```
 **Author**: Alan O'Callaghan (alan.b.ocallaghan@gmail.com)
 
+Introduction
+============
+This vignette details the data pre-processing steps undertaken on the breast
+cancer RNAseq data utilised in the main [biological data](biological_data.html)
+vignette in this package.
 
 
 Data pre-processing
