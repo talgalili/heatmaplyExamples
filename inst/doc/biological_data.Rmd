@@ -38,35 +38,47 @@ knitr::opts_chunk$set(
 Introduction
 ============
 
-- Data pre-processing
-- See if samples cluster based on receptor status
-- Subset to PAM50 genes
-- See if samples cluster based on receptor status
-- Center data
-- Compare voom and normal log2
-- Demonstrate outlier detection
+This vignette is intended to provide an overview of the use of
+`heatmaply` in the analysis of biological data. In particular, 
+this vignette deals with its use to visualise gene expression 
+patterns and sample relationships in 
+RNAseq data relating to breast cancer samples,
+as retrieved from from [Genomic Data Commons].
+
+Briefly, the following steps were performed:
+
+1. Data retrieval pre-processing
+2. Visualisation of raw and voom-transformed data (all genes)
+3. Visualisation of raw and voom-transformed data (PAM50 genes only)
+4. Visualisation of raw and voom-transformed data 
+  (median-centred data, PAM50 genes only)
+5. Demonstrate outlier detection using synthetic example
+
+[Genomics Data Commons]: https://gdc.cancer.gov/
 
 
-Data pre-processing
+Data retrieval and pre-processing
 =================
-The data used in this vignette is available within the package. A full 
-explanation of how this data was retrieved from the 
+The data used in this vignette is available within the package. 
+A full explanation of how this data was retrieved from the 
 [Genomic Data Commons] is available in the [data preprocessing vignette].
 
 
 [Genomics Data Commons]: https://gdc.cancer.gov/
-[data preprocessing vignette]: ./data_preprocessing.html
+[data preprocessing vignette]: data_preprocessing.html
 
 
-heatmaply workflow
+Visualisation of raw and voom-transformed data
 ==================
+
 ```{r}
 cor_mat_raw_logged <- cor(log2(raw_expression + 0.5))
 
 heatmaply(cor_mat_raw_logged, 
+    row_side_colors = tcga_brca_clinical,
     main = 'log2 Count data correlation',
     showticklabels = c(FALSE, FALSE),
-    row_side_colors=tcga_brca_clinical,
+    subplot_widths = c(0.7, 0.1, 0.2),
     plot_method = 'plotly')
 
 ```
@@ -77,27 +89,19 @@ voom explanation
 cor_mat_voomed <- cor(voomed_expression)
 
 heatmaply(cor_mat_voomed, 
+    row_side_colors = tcga_brca_clinical,
     main = 'log2 cpm data correlation',
     showticklabels = c(FALSE, FALSE),
-    row_side_colors=tcga_brca_clinical,
+    subplot_widths = c(0.7, 0.1, 0.2),
     plot_method = 'plotly')
-
-
-tmp <- voomed_expression
-tmp[, 1] <- tmp[, 1] <- rnorm(nrow(tmp), 100, 20)
-
-
-heatmaply(cor(voomed_expression), 
-    row_side_colors=tcga_brca_clinical,
-    showticklabels = c(FALSE, FALSE),
-    main = 'Outlier on correlation matrix',
-    col = gplots::bluered(50),
-    limits = c(-1, 1),
-    plot_method = 'plotly')
-
 
 ```
 
+
+
+Visualisation of raw data (median-centred data, PAM50 genes only)
+==================
+Heatmaps of non-centred are shown in [another vignette](non_centred_heatmaps.html) within this package.
 
 
 ```{r}
@@ -105,31 +109,37 @@ pam50_genes <- intersect(pam50_genes, rownames(raw_expression))
 raw_pam50_expression <- raw_expression[pam50_genes, ]
 voomed_pam50_expression <- voomed_expression[pam50_genes, ]
 
-center_raw_mat <- log2(raw_pam50_expression + 0.5) - 
-    apply(log2(raw_pam50_expression + 0.5), 1, median)
+center_raw_mat <- cor_mat_raw_logged - 
+    apply(cor_mat_raw_logged, 1, median)
 
 raw_max <- max(abs(center_raw_mat), na.rm=TRUE)
 raw_limits <- c(-raw_max, raw_max)
 
 
 heatmaply(t(center_raw_mat), 
-    row_side_colors=tcga_brca_clinical,
+    row_side_colors = tcga_brca_clinical,
     showticklabels = c(TRUE, FALSE),
+    fontsize_col = 7.5,
     col = gplots::bluered(50),
     main = 'raw centered pam50',
     limits = raw_limits,
     plot_method = 'plotly')
 
 
-heatmaply(cor(center_raw_mat), 
-    row_side_colors=tcga_brca_clinical,
+heatmaply_cor(cor(center_raw_mat), 
+    row_side_colors = tcga_brca_clinical,
     showticklabels = c(FALSE, FALSE),
     main = 'correlation of raw centered pam50',
-    limits = c(-1, 1),
-    col = gplots::bluered(50),
     plot_method = 'plotly')
 
 
+```
+
+Visualisation of raw and voom-transformed data (median-centred data, PAM50 genes only)
+==================
+
+
+```{r}
 center_voom_mat <- voomed_pam50_expression - 
     apply(voomed_pam50_expression, 1, median)
 
@@ -139,6 +149,7 @@ voom_limits <- c(-voom_max, voom_max)
 
 heatmaply(t(center_voom_mat), 
     row_side_colors=tcga_brca_clinical,
+    fontsize_col = 7.5,
     showticklabels = c(TRUE, FALSE),
     col = gplots::bluered(50),
     limits = voom_limits,
@@ -146,14 +157,14 @@ heatmaply(t(center_voom_mat),
     plot_method = 'plotly')
 
 
-heatmaply(cor(center_voom_mat), 
-    row_side_colors=tcga_brca_clinical,
+heatmaply_cor(cor(center_voom_mat), 
+    row_side_colors = tcga_brca_clinical,
     showticklabels = c(FALSE, FALSE),
     main = 'correlation of voomed pam50',
-    col = gplots::bluered(50),
-    limits = c(-1, 1),
     plot_method = 'plotly')
 
-
-
 ```
+
+
+Demonstrate outlier detection using synthetic example
+=====================================================
