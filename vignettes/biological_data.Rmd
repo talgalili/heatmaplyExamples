@@ -58,7 +58,7 @@ Briefly, the following steps were performed:
 
 
 Data retrieval and pre-processing
-=================
+=================================
 The data used in this vignette is available within the package. 
 A full explanation of how this data was retrieved from the 
 [Genomic Data Commons] is available in the [data preprocessing vignette].
@@ -69,10 +69,14 @@ A full explanation of how this data was retrieved from the
 
 
 Visualisation of raw and voom-transformed data
-==================
+==============================================
+In the first instance, one can visualise the pairwise correlation matrix of 
+all samples in the matrix of gene counts present in this study (saved
+within the package as raw_tcga_breast_expression)
+
 
 ```{r}
-cor_mat_raw_logged <- cor(log2(raw_expression + 0.5))
+cor_mat_raw_logged <- cor(log2(tcga_breast_expression + 0.5))
 
 heatmaply(cor_mat_raw_logged, 
     row_side_colors = tcga_brca_clinical,
@@ -85,6 +89,8 @@ heatmaply(cor_mat_raw_logged,
 voom explanation
 
 ```{r}
+
+voomed_tcga_expression <- limma::voom(tcga_breast_expression)
 
 cor_mat_voomed <- cor(voomed_expression)
 
@@ -100,13 +106,13 @@ heatmaply(cor_mat_voomed,
 
 
 Visualisation of raw data (median-centred data, PAM50 genes only)
-==================
+=================================================================
 Heatmaps of non-centred are shown in [another vignette](non_centred_heatmaps.html) within this package.
 
 
 ```{r}
-pam50_genes <- intersect(pam50_genes, rownames(raw_expression))
-raw_pam50_expression <- raw_expression[pam50_genes, ]
+pam50_genes <- intersect(pam50_genes, rownames(tcga_breast_expression))
+raw_pam50_expression <- tcga_breast_expression[pam50_genes, ]
 voomed_pam50_expression <- voomed_expression[pam50_genes, ]
 
 center_raw_mat <- cor_mat_raw_logged - 
@@ -136,7 +142,7 @@ heatmaply_cor(cor(center_raw_mat),
 ```
 
 Visualisation of raw and voom-transformed data (median-centred data, PAM50 genes only)
-==================
+======================================================================================
 
 
 ```{r}
