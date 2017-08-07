@@ -40,45 +40,73 @@ in the main [biological data](biological_data.html)
 vignette in this package.
 
 
+
+Non-centred heatmaps
+============================
+
+
+
+
+
 ```{r}
 
-pam50_genes <- intersect(pam50_genes, rownames(raw_expression))
-raw_pam50_expression <- raw_expression[pam50_genes, ]
-voomed_pam50_expression <- voomed_expression[pam50_genes, ]
+pam50_genes <- intersect(pam50_genes, rownames(tcga_breast_expression))
+raw_pam50_expression <- tcga_breast_expression[pam50_genes, ]
+
+
+dge <- edgeR::DGEList(counts = tcga_breast_expression)
+dge <- edgeR::calcNormFactors(dge, method = "TMM")
+voomed_tcga_expression <- limma::voom(dge, normalize.method="quantile")
+voomed_tcga_expression <- voomed_tcga_expression$E
+
+voomed_pam50_expression <- voomed_tcga_expression[pam50_genes, ]
+
+cor_distfun <- function(x) as.dist(1 - cor(t(x)))
+
 
 log_raw_mat <- log2(raw_pam50_expression + 0.5)
 
-heatmaply(t(log_raw_mat), 
+
+
+heatmaply(t(log_raw_mat),
     row_side_colors = tcga_brca_clinical,
     showticklabels = c(TRUE, FALSE),
     fontsize_col = 7.5,
+    distfun = cor_distfun,
     col = gplots::bluered(50),
-    main = 'raw pam50',
+    main = 'log2 expression of count data (pam50 genes)',
     plot_method = 'plotly')
 
 
 heatmaply_cor(cor(log_raw_mat), 
     row_side_colors = tcga_brca_clinical,
     showticklabels = c(FALSE, FALSE),
-    main = 'correlation of raw pam50',
+    main = 'Sample correlation of raw count data (pam50 genes)',
     plot_method = 'plotly')
+```
 
 
+
+
+
+
+```{r}
 
 
 heatmaply(t(voomed_pam50_expression), 
     row_side_colors = tcga_brca_clinical,
     showticklabels = c(TRUE, FALSE),
     fontsize_col = 7.5,
+    distfun = cor_distfun,
     col = gplots::bluered(50),
-    main = 'voomed pam50',
+    main = 'Normalised RNAseq gene expression data (pam50 genes)',
     plot_method = 'plotly')
 
 
 heatmaply_cor(cor(voomed_pam50_expression), 
     row_side_colors = tcga_brca_clinical,
     showticklabels = c(FALSE, FALSE),
-    main = 'correlation of voomed pam50',
+    main = 'Sample correlation of normalised pam50 genes',
     plot_method = 'plotly')
 
 
