@@ -1,0 +1,631 @@
+---
+title: "Example of using heatmaply on famous data-sets"
+author: "Tal Galili"
+date: "`r Sys.Date()`"
+output: 
+  html_document:
+    toc: true # table of content true
+    depth: 3  # upto three depths of headings (specified by #, ## and ###)
+    self_contained: yes
+    number_sections: true  ## if you want number sections at each table header
+    theme: yeti  # many options for theme, this one is my favorite.
+    highlight: tango  # specifies the syntax highlighting style
+---
+
+<!--
+%\VignetteEngine{knitr::rmarkdown}
+%\VignetteIndexEntry{Example of using heatmaply on famous data-sets}
+-->
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, cache = TRUE)
+```
+
+
+
+
+
+
+```{r}
+library(heatmaply)
+library(dendextend)
+```
+
+
+mtcars - Motor Trend Car Road Tests
+===========
+
+The data was extracted from the 1974 Motor Trend US magazine, and comprises fuel consumption and 10 aspects of automobile design and performance for 32 automobiles (1973–74 models).
+
+
+```{r}
+mtcars2 <- datasets::mtcars
+mtcars2$am <- factor(mtcars2$am)
+mtcars2$gear <- factor(mtcars2$gear)
+mtcars2$vs <- factor(mtcars2$vs)
+
+library(heatmaply)
+heatmaply(percentize(mtcars2), 
+          xlab = "Features", ylab = "Cars", 
+          main = "Motor Trend Car Road Tests",
+          k_col = 2, k_row = NA,
+          margins = c(60,100,40,20) )
+```
+
+
+
+For visualizing the correlation matrix we wish to use divergent color palette as well as set the limits.
+
+```{r}
+library(heatmaply)
+
+heatmaply(cor(mtcars), margins = c(40, 40, 0, 0),
+          k_col = 2, k_row = 2,
+          colors = BrBG,
+          limits = c(-1,1))
+```
+
+
+iris - Edgar Anderson's Iris Data
+===========
+
+
+> The famous (Fisher's or Anderson's) iris data set gives the measurements in centimeters of the variables sepal length and width and petal length and width, respectively, for 50 flowers from each of 3 species of iris. The species are Iris setosa, versicolor, and virginica. (from `?iris`)
+
+
+
+The [Iris flower data set](https://en.wikipedia.org/wiki/Iris_flower_data_set) is fun for learning supervised classification algorithms, and is known as a difficult case for unsupervised learning. Since the values represent length it makes sense to have them start at 0 and end a bit above the highest value in the data-set (which is 7.9).
+
+Notice the use of `find_dend` and `seriate_dendrogram` to find the "best" linkage function. Looking at the performance of `dend_expend` shows that complete gets a cophenetic correlation of 0.72 while the best option (average) gets 0.876.
+
+```{r}
+iris <- datasets::iris
+
+library(heatmaply)
+library(dendextend)
+
+iris2 <- iris[,-5]
+rownames(iris2) <- 1:150
+iris_dist <- iris2 %>% dist 
+dend <- iris_dist %>% find_dend %>% seriate_dendrogram(., iris_dist)
+dend_expend(iris_dist)$performance
+
+heatmaply(iris, limits = c(0,8),
+            xlab = "Lengths", ylab = "Flowers", 
+            main = "Edgar Anderson's Iris Data",
+          Rowv = dend,
+          margins = c(85, 40),
+          grid_gap = 0.2, k_row = 3)
+
+
+```
+
+
+
+
+
+New York Air Quality Measurements (airquality)
+=============
+
+Daily air quality measurements in New York, May to September 1973.
+
+The plot shows us that most missing values are in the Ozone variable, and the month distribution (available in the row-side notation) shows that most missing values are from June. Notice the use of grid_gap and grey colors in order to aid in the visualization.
+
+```{r}
+
+library(heatmaply)
+
+
+airquality2 <- datasets::airquality
+airquality2[,c(1:4,6)] <- is.na10(airquality2[,c(1:4,6)])
+airquality2[,5] <- factor(airquality2[,5])
+
+heatmaply(airquality2, grid_gap = 1,
+            xlab = "Features", ylab = "Days", 
+            main = "Missing values in 'New York Air Quality Measurements'",
+            k_col =3, k_row = 3,
+            margins = c(55, 30),
+            colors = c("grey80", "grey20"))
+
+
+# warning - using grid_color cannot handle a large matrix!
+# airquality[1:10,] %>% is.na10 %>% 
+#   heatmaply(color = c("white","black"), grid_color = "grey",
+#             k_col =3, k_row = 3,
+#             margins = c(40, 50)) 
+# airquality %>% is.na10 %>% 
+#   heatmaply(color = c("grey80", "grey20"), # grid_color = "grey",
+#             k_col =3, k_row = 3,
+#             margins = c(40, 50)) 
+# 
+
+```
+
+
+
+ALL - Gentleman et al. 2004
+==============
+
+Background
+-----------
+
+This document uses R to analyse an Acute lymphocytic leukemia (ALL) microarray data-set, producing a heatmap (with dendrograms) of genes deferentially expressed between two types of leukemia. The creation of the data and code for static figures is based on the code available from [here](http://www2.warwick.ac.uk/fac/sci/moac/people/students/peter_cock/r/heatmap/).
+
+The original citation for the raw data is "Gene expression profile of adult T-cell acute lymphocytic leukemia identifies distinct subsets of patients with different response to therapy and survival" by Chiaretti et al. Blood 2004. (PMID: 14684422). This document demonstrates the recreation of Figure 2 Heatmap from the [paper Bioconductor: open software development for computational biology and bioinformatics, Gentleman et al. 2004.](https://genomebiology.biomedcentral.com/articles/10.1186/gb-2004-5-10-r80).
+
+
+Static cluster heatmap 
+-------------------
+
+### Getting the data
+
+
+```{r get_data}
+
+# Get needed packages:
+if(!require("ALL")) {
+  source("http://www.bioconductor.org/biocLite.R")
+  biocLite("ALL")
+}
+if(!require("limma")) {
+  source("http://www.bioconductor.org/biocLite.R")
+  biocLite("limma")
+}
+
+
+
+library("ALL")
+data("ALL")
+eset <- ALL[, ALL$mol.biol %in% c("BCR/ABL", "ALL1/AF4")]
+library("limma")
+f <- factor(as.character(eset$mol.biol))
+design <- model.matrix(~f)
+fit <- eBayes(lmFit(eset,design))
+selected  <- p.adjust(fit$p.value[, 2]) <0.05
+esetSel <- eset [selected, ]
+color.map <- function(mol.biol) { if (mol.biol=="ALL1/AF4") "#FF0000" else "#0000FF" }
+patientcolors <- unlist(lapply(esetSel$mol.bio, color.map))
+hm_data <- exprs(esetSel)
+
+```
+
+
+### stats::heatmap 
+
+
+The colors are a bit off compared with the original plot, but they are pretty close.
+
+```{r}
+heatmap(hm_data, col=topo.colors(100), ColSideColors=patientcolors)
+```
+
+
+### gplots::heatmap.2
+
+Here also, the colors are a bit off compared with the original plot, but they are pretty close.
+
+```{r}
+library("gplots")
+heatmap.2(hm_data, col=topo.colors(100), scale="row", ColSideColors=patientcolors,
+          key=TRUE, symkey=FALSE, density.info="none", trace="none", cexRow=0.5)
+```
+
+
+
+Interactive cluster heatmap 
+----------------
+
+### heatmaply - replicating gplots::heatmap.2
+
+
+Several slight changes need to be made. We should use color instead of col, also the seriate parameter should use "mean" and the margin parameter needs to be set. But once done, the results are very similar.
+
+
+```{r}
+library(heatmaply)
+
+
+heatmaply(hm_data, color=topo.colors(100), ColSideColors=patientcolors, 
+          seriate = "mean", scale="row", margin = c(65,120,10,10)) 
+        # %>% layout(autosize = F, width = 500, height = 500)
+
+```
+
+
+### Using heatmaply's defaults
+
+
+The heatmaply package tries to offer better defaults.
+
+Instead of topo.colors (or the default "heat.colors" in heatmap.2), heatmaply uses the [superior viridis color](https://cran.r-project.org/web/packages/viridis/vignettes/intro-to-viridis.html) palette:
+
+
+```{r}
+library(heatmaply)
+
+heatmaply(hm_data, ColSideColors=patientcolors, 
+          seriate = "mean", scale="row", margin = c(65,120,10,10)) 
+        
+
+```
+
+
+
+Instead of ordering based on the mean, heatmaply uses optimal-leaf-order, and the branches of the dendrograms can be colors to highlight a pre-defined number of assumed clusters:
+
+```{r}
+library(heatmaply)
+
+heatmaply(hm_data, ColSideColors=patientcolors, 
+          fontsize_row = 5,
+          scale="row", margin = c(65,120,10,10), 
+          k_col = 2, k_row = 5) 
+        
+
+```
+
+
+```{r, eval = FALSE}
+
+
+heatmaply(hm_data, ColSideColors=patientcolors, 
+          fontsize_row = 5,
+          scale="row", margin = c(50,50,10,10), 
+          row_dend_left = TRUE, plot_method = "plotly",
+          k_col = 2, k_row = 5) 
+        
+
+```
+
+
+
+
+
+
+# votes.repub - Votes for Republican Candidate in Presidential Elections
+
+
+### Background
+
+> This is a data frame with the percentage of votes given to the republican candidate in presidential elections from 1856 to 1976. Rows represent the 50 states, and columns the 31 elections.
+
+
+> Source: S. Peterson (1973): A Statistical History of the American Presidential Elections. New York: Frederick Ungar Publishing Co.
+Data from 1964 to 1976 is from R. M. Scammon, American Votes 12, Congressional Quarterly.
+
+
+Define variables:
+
+```{r}
+votes.repub <- cluster::votes.repub
+```
+
+These data can be visualized using a (costumed made) parallel coordinates plot:
+
+
+```{r, fig.height=5}
+years <- as.numeric(gsub("X", "", colnames(votes.repub)))
+
+par(las = 2, mar = c(4.5, 3, 3, 2) + 0.1, cex = .8)
+# MASS::parcoord(votes.repub, var.label = FALSE, lwd = 1)
+matplot(1L:ncol(votes.repub), t(votes.repub), type = "l", col = 1, lty = 1,
+        axes = F, xlab = "", ylab = "")
+axis(1, at = seq_along(years), labels = years)
+axis(2)
+# Add Title
+title("Votes for Republican Candidate\n in Presidential Elections \n (each line is a country - over the years)")
+```
+
+
+### Heatmap 
+
+This is a nice example when the parallel coordinates plot has some serious limitations: it does not help us detect the states, we fail to see the missing value patterns, and it is tricky to see clusters in general (due to the large number of threads).
+
+For these data, it can be quite helpful to see a heatmap of the votes across the years. The ordering of the rows is tricky. First, the distance of the vectors (later used for the clustering) should be done after transformation (since we are dealing with proportion of votes). In this case, I used the arcsin transformation (a logit transformation could also work, but the arcsin is safer for dealing with 0/1 observations). But given the clusters, we wish to order the leaves (as much as possible), in order to take into account the missing value clusterings. So we, in fact, have two clusters, one for the raw values, and another for the "shadow matrix" (i.e.: the matrix with 0/1, indicating if a value was missing or not).
+
+
+
+
+
+
+```{r}
+
+# votes.repub[is.na(votes.repub)] <- 50
+
+library(heatmaply)
+
+heatmaply(votes.repub, 
+          margins = c(60,150,110,10),
+          k_row = NA,
+          limits = c(0,100),
+          main = "Votes for\n Republican Presidential Candidate\n (clustered using complete)",
+          srtCol = 60,
+          dendrogram = "row",
+          ylab = "% Votes for Republican\n Presidential Candidate",
+          colors = colorspace::diverge_hcl
+         )
+          # RowSideColors = rev(labels_colors(dend)), # to add nice colored strips		
+
+
+```
+
+
+
+
+
+
+# animals - Attributes of Animals
+
+
+### Background
+
+> This data set considers 6 binary attributes for 20 animals.
+
+> see Struyf, Hubert & Rousseeuw (1996), in agnes.
+
+
+
+
+Define variables:
+
+```{r}
+animals <- cluster::animals
+
+colnames(animals) <- c("warm-blooded", 
+                       "can fly",
+                       "vertebrate",
+                       "endangered",
+                       "live in groups",
+                       "have hair")
+```
+
+
+### Heatmap 
+
+This is a good example for using a heatmap + colored branches.
+
+
+```{r}
+
+# some_col_func <- function(n) rev(colorspace::heat_hcl(n, c = c(80, 30), l = c(30, 90), power = c(1/5, 1.5)))
+# some_col_func <- colorspace::diverge_hcl
+# some_col_func <- colorspace::sequential_hcl
+some_col_func <- function(n) (colorspace::diverge_hcl(n, h = c(246, 40), c = 96, l = c(65, 90)))
+
+
+library(heatmaply)
+
+heatmaply(as.matrix(animals-1), 
+          main = "Attributes of Animals",
+          srtCol = 35,
+          k_col = 3, k_row = 4,
+          margins =c(80,50, 40,10),      
+          col = some_col_func
+         )
+
+```
+
+
+
+
+
+
+
+
+
+Measles
+=============
+
+
+
+Preparing the data:
+
+```{r, eval=FALSE}
+
+# measles
+# bil gates (20 Feb 2015): https://twitter.com/BillGates/status/568749655112228865
+# http://graphics.wsj.com/infectious-diseases-and-vaccines/#b02g20t20w15
+# http://www.opiniomics.org/recreating-a-famous-visualisation/
+# http://www.r-bloggers.com/recreating-the-vaccination-heatmaps-in-r-2/
+
+
+
+
+# source: http://www.r-bloggers.com/recreating-the-vaccination-heatmaps-in-r/
+# measles <- read.csv("https://raw.githubusercontent.com/blmoore/blogR/master/data/measles_incidence.csv", header=T, 
+#                     skip=2, stringsAsFactors=F)
+# dir.create("data")
+# write.csv(measles, file = "data\\measles.csv")
+# measles[measles == "-"] <- NA
+measles[,-(1:2)] <- apply(measles[,-(1:2)], 2, as.numeric)
+
+dim(measles)
+# head(measles)
+
+d2 <- aggregate(measles, list(measles[, "YEAR"]), "sum", na.rm = T)
+rownames(d2) <- d2[,1]
+d2 <- d2[, -c(1:4)]
+d2 <- t(d2)
+# head(d2)
+
+dim(d2)
+d2[1:5,1:5]
+
+md2 <- reshape2::melt(d2)
+# head(md2)
+# 
+# # per week
+# d22 <- aggregate(measles, list(measles$YEAR, measles$WEEK), "sum", na.rm = T)
+# rownames(d22) <- paste(d22[,1], d22[,2], sep = "_")
+# d22 <- d22[, -c(1:5)]
+# d22 <- t(d22)
+# md22 <- reshape2::melt(d22)
+# dim(d22) # 51 3952
+
+
+```
+
+
+```{r, eval=FALSE}
+
+head(md2)
+```
+
+
+```{r, eval=FALSE}
+
+# pander::pander(sqrt(d2))
+if(!file.exists("data\\sqrt_d2.csv")) write.csv(sqrt(d2), file = "data\\sqrt_d2.csv")
+```
+
+We can look at the general timeline trend with different transformations.
+
+
+```{r, eval=FALSE}
+
+library(ggplot2)
+ggplot(md2, aes(x = Var2, y = value)) + geom_line(aes(group = Var1)) + geom_smooth(size = 2)
+ggplot(md2, aes(x = Var2, y = sqrt(value))) + geom_line(aes(group = Var1)) + geom_smooth(size = 2)
+ggplot(md2, aes(x = Var2, y = log(value+.1))) + geom_line(aes(group = Var1)) + geom_smooth(size = 2)
+
+
+
+# ggplot(md22, aes(x = Var2, y = value)) + geom_line(aes(group = Var1)) # + geom_smooth(size = 2)
+
+#
+# we miss the per state information and the patters of similarity
+
+
+
+```
+
+
+We can try several heatmaps settings until we get one that works. Notice the effect of the color scheme.
+
+```{r, eval=FALSE}
+
+
+
+library(gplots)
+library(viridis)
+heatmap.2(d2)
+heatmap.2(d2, margins = c(3, 9))
+heatmap.2(d2,trace = "none", margins = c(3, 9))
+heatmap.2(d2, trace = "none", margins = c(3, 9), dendrogram = "row", Colv = NULL)
+# heatmap.2(sqrt(d2), Colv = NULL, trace = "none", margins = c(3, 9))
+library(viridis)
+heatmap.2(d2, Colv = NULL, trace = "none", col = viridis(200), margins = c(3, 9))
+heatmap.2(sqrt(d2), Colv = NULL, trace = "none", col = viridis(200), margins = c(3, 9))
+
+# hist(d2, col = )
+
+library(ggplot2)
+library(viridis)
+hp <- qplot(x = as.numeric(d2), fill = ..count.., geom = "histogram")
+hp + scale_fill_viridis(direction = -1) + xlab("Measles incedence") + theme_bw()
+
+
+
+```
+
+
+Using scaling doesn't make much sense in this data.
+
+```{r, eval=FALSE}
+
+heatmap.2(d2, dendrogram = "row", Colv = NULL, trace = "none", margins = c(3, 9),
+          col = viridis(200), 
+          scale = "row"
+          )
+heatmap.2(d2, dendrogram = "row", Colv = NULL, trace = "none", margins = c(3, 9),
+          col = viridis(200), 
+          scale = "column"
+          )
+
+
+
+```
+
+
+Decisions for clustering (highlight_branches helps identify the topology of the dendrogram, it colors each branch based on its height):
+
+```{r, eval=FALSE}
+DATA <- d2
+d <- dist(sqrt(DATA))
+
+library(dendextend)
+dend_expend(d)[[3]]
+# average seems to make the most sense
+
+dend_row <- d %>% hclust(method = "average") %>% as.dendrogram 
+dend_row %>% highlight_branches %>% plot
+```
+
+
+What would be the optimal number of clusters? (it seems that 3 would be good)
+
+```{r, eval=FALSE}
+
+library(dendextend)
+
+dend_k <- find_k(dend_row)
+plot(dend_k)
+
+```
+
+
+Let's plot it:
+
+```{r, eval=FALSE}
+
+Rowv <- dend_row %>% color_branches(k = 3)
+heatmap.2(sqrt(d2), Colv = NULL, Rowv = Rowv, trace = "none", col = viridis(200), margins = c(3, 9))
+
+Rowv <- dend_row %>% color_branches(k = 3) %>% seriate_dendrogram(x=d)
+heatmap.2(sqrt(d2), Colv = NULL, Rowv = Rowv, trace = "none", col = viridis(200), margins = c(3, 9))
+
+```
+
+
+
+All of this work (other then finding that the hclust method should be average) can simply be done using the following code to produce an interactive heatmap:
+
+
+```{r, eval=FALSE}
+
+library(heatmaply)
+heatmaply(sqrt(d2), Colv = NULL, hclust_method = "average", 
+          fontsize_row = 8,fontsize_col = 6,
+          k_row = NA, margins = c(60,170, 70,40),
+          xlab = "Year", ylab = "State", main = "Project Tycho's heatmap visualization \nof the measles vaccine"
+        ) 
+
+
+```
+
+We can also use plot_method = "plotly", row_dend_left = TRUE
+to make the plot more similar to heatmap.2 using the plotly engine (this is a bit more experimental. The default,  plot_method = "ggplot", is often safer to use - but it does not yet support row_dend_left = TRUE properly).
+
+```{r, eval=FALSE}
+
+heatmaply(sqrt(d2), Colv = NULL, hclust_method = "average", 
+          fontsize_row = 8,fontsize_col = 6,
+          k_row = NA, margins = c(60,50, 70,90),
+          xlab = "Year", ylab = "State", main = "Project Tycho's heatmap visualization \nof the measles vaccine",
+          plot_method = "plotly", row_dend_left = TRUE
+        ) 
+# 
+# heatmaply(sqrt(d2), Colv = NULL, hclust_method = "average", 
+#           fontsize_row = 8,fontsize_col = 6,
+#           k_row = NA, margins = c(60,50, 70,90),
+#           xlab = "Year", ylab = "State", main = "Project Tycho's heatmap visualization \nof the measles vaccine",
+#           plot_method = "plotly", row_dend_left = TRUE, file = "measles.html"
+#         ) 
+
+```
+
+
+```{r, cache=FALSE}
+save.image("example.Rdata")
+```
+

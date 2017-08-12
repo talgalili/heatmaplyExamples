@@ -46,7 +46,7 @@ raw_limits <- c(-raw_max, raw_max)
 
 heatmaply(t(center_raw_mat), 
     row_side_colors = tcga_brca_clinical,
-    showticklabels = c(TRUE, FALSE),
+    showticklabels = c(FALSE, FALSE),
     fontsize_col = 7.5,
     col = gplots::bluered(50),
     main = 'raw centered pam50',
@@ -56,7 +56,7 @@ heatmaply(t(center_raw_mat),
 
 heatmaply_cor(cor(center_raw_mat), 
     row_side_colors = tcga_brca_clinical,
-    showticklabels = c(FALSE, FALSE),
+    showticklabels = c(TRUE, FALSE),
     main = 'correlation of raw centered pam50',
     plot_method = 'plotly')
 
@@ -73,7 +73,7 @@ voom_limits <- c(-voom_max, voom_max)
 heatmaply(t(center_voom_mat), 
     row_side_colors=tcga_brca_clinical,
     fontsize_col = 7.5,
-    showticklabels = c(TRUE, FALSE),
+    showticklabels = c(FALSE, FALSE),
     col = gplots::bluered(50),
     limits = voom_limits,
     main = 'voomed pam50',
@@ -82,7 +82,7 @@ heatmaply(t(center_voom_mat),
 
 heatmaply_cor(cor(center_voom_mat), 
     row_side_colors = tcga_brca_clinical,
-    showticklabels = c(FALSE, FALSE),
+    showticklabels = c(TRUE, FALSE),
     main = 'correlation of voomed pam50',
     plot_method = 'plotly')
 

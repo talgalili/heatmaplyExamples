@@ -16,7 +16,8 @@ Depends:
 Imports:
     TCGAbiolinks,
     SummarizedExperiment,
-    biomaRt
+    biomaRt,
+    glmnet
 Suggests:
     webshot
 VignetteBuilder: knitr

@@ -1,7 +1,7 @@
 ---
 title: "Non-centred RNAseq heatmap (PAM50 genes)"
-date: "`r Sys.Date()`"
 author: "Alan O'Callaghan"
+date: "`r Sys.Date()`"
 output:
   html_document:
     self_contained: yes

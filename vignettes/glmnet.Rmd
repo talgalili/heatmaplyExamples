@@ -1,0 +1,112 @@
+---
+title: "Using heatmaply with glmnet"
+author: "Alan O'Callaghan"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    self_contained: yes
+    toc: true
+    fig_width: 15
+    fig_height: 15
+    depth: 3  # upto three depths of headings (specified by #, ## and ###)  
+    number_sections: true  ## if you want number sections at each table header
+    theme: yeti  # many options for theme, this one is my favorite.
+    highlight: tango  # specifies the syntax highlighting style
+---
+<!--
+%\VignetteEngine{knitr::rmarkdown}
+%\VignetteIndexEntry{Using heatmaply with biological data}
+-->
+
+
+```{r, echo = FALSE, message = FALSE}
+library(heatmaply)
+library(heatmaplyExamples)
+library(knitr)
+knitr::opts_chunk$set(
+   # cache = TRUE,
+   dpi = 60,
+  comment = '#>',
+  tidy = FALSE)
+
+```
+**Author**: Alan O'Callaghan (alan.b.ocallaghan@gmail.com)
+
+Introduction
+============
+
+Regularised regression is a form of statistical analysis commonly used within
+biological research. It is beyond the scope of the present vignette to explain
+in detail. In brief, regularisation applies a penalty term to coefficients.
+This may be applied in several ways. 
+
+
+LASSO (Least Absolute Selection and Shrinkage Operator), or L1 regularisation, 
+applies a penalty to the absolute value of the coefficients. 
+Increasing the degree of penalisation in this instance tends to cause 
+coefficients to be reduced to zero, effectively removing those features from the
+model. 
+
+L2 regularisation, or ridge regression, applies a similar penalty to 
+the squared value of coefficients. In this instance, the consequence of 
+increasing the penalty term is not the removal of features, but rather the
+reduction in magnitude of all features. This can be used to reduce the variance
+of the model, and to prevent overfitting. 
+
+Finally, the "elastic net" is 
+a combination of these two methods. The proportion of each penalty type
+applied is controlled by an `alpha` parameter, which may vary between
+zero (ridge regression) and one (LASSO). 
+
+The glmnet package implements the elastic net for many common generalised linear
+models, including linear regression, logistic regression, Poisson regression,
+and Cox proportional hazards models. In this instance, we will examine some simple
+plots using Cox proportional hazards models, though the techniques described 
+herein may be applied to any form of elastic net regression.
+
+
+```{r}
+suppressPackageStartupMessages(library(glmnet))
+## Example data from the glmnet package
+data(CoxExample)
+
+## Fit ridge regression model
+fit1 <- glmnet(x, y, 
+  family="cox", 
+  nlambda=500, 
+  alpha=0)
+
+## Visualise coefficients
+plot(fit1, "lambda")
+
+
+
+## Fit LASSO regression model
+fit2 <- glmnet(x, y, 
+  family="cox", 
+  nlambda=500, 
+  alpha=1)
+
+## Visualise coefficients
+plot(fit2, "lambda")
+
+```
+
+It is worth noting that this is a very useful visualisation. However it should
+also be noted that it can be difficult to identify features which are being 
+retained in the model, particularly when there are large numbers of features.
+heatmaply allows a similarly useful visualisation of coefficient magnitude 
+against , but in this case it may be easier to identify coefficients which 
+have interesting behaviour over the range of lambda values used.
+
+
+```{r}
+beta1 <- as.matrix(fit1$beta)
+heatmaply(beta1, dendrogram="row",
+  main = "Heatmap of ridge regression model coefficients over range of lambda values")
+
+beta2 <- as.matrix(fit2$beta)
+heatmaply(beta2, dendrogram="row",
+    main = "Heatmap of LASSO model coefficients over range of lambda values")
+
+```

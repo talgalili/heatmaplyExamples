@@ -12,6 +12,11 @@ output:
     highlight: tango  # specifies the syntax highlighting style
 ---
 
+<!--
+%\VignetteEngine{knitr::rmarkdown}
+%\VignetteIndexEntry{Example of using heatmaply on famous data-sets}
+-->
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, cache = TRUE)
 ```
@@ -415,7 +420,7 @@ Measles
 
 Preparing the data:
 
-```{r}
+```{r, eval=FALSE}
 
 # measles
 # bil gates (20 Feb 2015): https://twitter.com/BillGates/status/568749655112228865
@@ -431,14 +436,13 @@ Preparing the data:
 #                     skip=2, stringsAsFactors=F)
 # dir.create("data")
 # write.csv(measles, file = "data\\measles.csv")
-measles <- read.csv("data\\measles.csv")
-measles[measles == "-"] <- NA
+# measles[measles == "-"] <- NA
 measles[,-(1:2)] <- apply(measles[,-(1:2)], 2, as.numeric)
 
 dim(measles)
 # head(measles)
 
-d2 <- aggregate(measles, list(measles$YEAR), "sum", na.rm = T)
+d2 <- aggregate(measles, list(measles[, "YEAR"]), "sum", na.rm = T)
 rownames(d2) <- d2[,1]
 d2 <- d2[, -c(1:4)]
 d2 <- t(d2)
@@ -462,12 +466,14 @@ md2 <- reshape2::melt(d2)
 ```
 
 
-```{r}
+```{r, eval=FALSE}
+
 head(md2)
 ```
 
 
-```{r}
+```{r, eval=FALSE}
+
 # pander::pander(sqrt(d2))
 if(!file.exists("data\\sqrt_d2.csv")) write.csv(sqrt(d2), file = "data\\sqrt_d2.csv")
 ```
@@ -475,7 +481,7 @@ if(!file.exists("data\\sqrt_d2.csv")) write.csv(sqrt(d2), file = "data\\sqrt_d2.
 We can look at the general timeline trend with different transformations.
 
 
-```{r}
+```{r, eval=FALSE}
 
 library(ggplot2)
 ggplot(md2, aes(x = Var2, y = value)) + geom_line(aes(group = Var1)) + geom_smooth(size = 2)
@@ -496,7 +502,7 @@ ggplot(md2, aes(x = Var2, y = log(value+.1))) + geom_line(aes(group = Var1)) + g
 
 We can try several heatmaps settings until we get one that works. Notice the effect of the color scheme.
 
-```{r}
+```{r, eval=FALSE}
 
 
 
@@ -525,7 +531,7 @@ hp + scale_fill_viridis(direction = -1) + xlab("Measles incedence") + theme_bw()
 
 Using scaling doesn't make much sense in this data.
 
-```{r}
+```{r, eval=FALSE}
 
 heatmap.2(d2, dendrogram = "row", Colv = NULL, trace = "none", margins = c(3, 9),
           col = viridis(200), 
@@ -543,7 +549,7 @@ heatmap.2(d2, dendrogram = "row", Colv = NULL, trace = "none", margins = c(3, 9)
 
 Decisions for clustering (highlight_branches helps identify the topology of the dendrogram, it colors each branch based on its height):
 
-```{r}
+```{r, eval=FALSE}
 DATA <- d2
 d <- dist(sqrt(DATA))
 
@@ -558,7 +564,7 @@ dend_row %>% highlight_branches %>% plot
 
 What would be the optimal number of clusters? (it seems that 3 would be good)
 
-```{r}
+```{r, eval=FALSE}
 
 library(dendextend)
 
@@ -570,7 +576,7 @@ plot(dend_k)
 
 Let's plot it:
 
-```{r}
+```{r, eval=FALSE}
 
 Rowv <- dend_row %>% color_branches(k = 3)
 heatmap.2(sqrt(d2), Colv = NULL, Rowv = Rowv, trace = "none", col = viridis(200), margins = c(3, 9))
@@ -585,7 +591,7 @@ heatmap.2(sqrt(d2), Colv = NULL, Rowv = Rowv, trace = "none", col = viridis(200)
 All of this work (other then finding that the hclust method should be average) can simply be done using the following code to produce an interactive heatmap:
 
 
-```{r}
+```{r, eval=FALSE}
 
 library(heatmaply)
 heatmaply(sqrt(d2), Colv = NULL, hclust_method = "average", 
@@ -600,7 +606,7 @@ heatmaply(sqrt(d2), Colv = NULL, hclust_method = "average",
 We can also use plot_method = "plotly", row_dend_left = TRUE
 to make the plot more similar to heatmap.2 using the plotly engine (this is a bit more experimental. The default,  plot_method = "ggplot", is often safer to use - but it does not yet support row_dend_left = TRUE properly).
 
-```{r}
+```{r, eval=FALSE}
 
 heatmaply(sqrt(d2), Colv = NULL, hclust_method = "average", 
           fontsize_row = 8,fontsize_col = 6,
