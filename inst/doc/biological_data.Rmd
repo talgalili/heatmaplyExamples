@@ -1,5 +1,5 @@
 ---
-title: "Using heatmaply with biological data (mutational and gene expression data)"
+title: "Using heatmaply with biological data (gene expression data)"
 author: "Alan O'Callaghan"
 date: "`r Sys.Date()`"
 output:
@@ -49,10 +49,9 @@ Briefly, the following steps were performed:
 
 1. Data retrieval pre-processing
 2. Visualisation of raw and voom-transformed data (all genes)
-3. Visualisation of raw and voom-transformed data (PAM50 genes only)
-4. Visualisation of raw and voom-transformed data 
+3. Visualisation of raw and voom-transformed data 
   (median-centred data, PAM50 genes only)
-5. Demonstrate outlier detection using synthetic example
+4. Demonstrate outlier detection using synthetic example
 
 
 
@@ -63,12 +62,27 @@ A full explanation of how this data was retrieved from the
 [Genomic Data Commons] is available in the [data preprocessing vignette].
 
 
-[Genomics Data Commons]: https://gdc.cancer.gov/
 [data preprocessing vignette]: data_preprocessing.html
 
 
-Visualisation of raw and voom-transformed data
-==================
+Visualisation of raw and voom-transformed data (all genes)
+==========================================================
+The R package [limma] is a commonly used statistical analysis tool using
+empirical Bayes methods. This package was originally developed for micro-array data.
+[voom] is a function within this package which transforms RNAseq count data in 
+log2 counts per million reads, which allows it to be treated similarly. 
+While pre-processing the data, quantile and TMM normalisation
+were also applied. To compare these normalised values to raw read counts, 
+the raw read counts were log~2~-transformed. 0.5 was
+added to prevent infinite values resulting from `log2(0)`.
+
+A common workflow for RNAseq differential expression analysis is to visualise
+gene expression measures and sample-sample correlations using a heatmap. 
+This is useful to observe whether samples appear to cluster together, for 
+the purposes of identifying poor quality samples or outliers.
+Furthermore, it may be useful to visualise differentially-expressed genes
+alongside row annotations which indicate patient or sample sub-group.
+
 
 ```{r}
 cor_mat_raw_logged <- cor(log2(raw_expression + 0.5))
@@ -77,11 +91,10 @@ heatmaply(cor_mat_raw_logged,
     row_side_colors = tcga_brca_clinical,
     main = 'log2 Count data correlation',
     showticklabels = c(FALSE, FALSE),
-    subplot_widths = c(0.7, 0.1, 0.2),
     plot_method = 'plotly')
 
 ```
-voom explanation
+
 
 ```{r}
 
@@ -91,7 +104,6 @@ heatmaply(cor_mat_voomed,
     row_side_colors = tcga_brca_clinical,
     main = 'log2 cpm data correlation',
     showticklabels = c(FALSE, FALSE),
-    subplot_widths = c(0.7, 0.1, 0.2),
     plot_method = 'plotly')
 
 ```
@@ -99,9 +111,28 @@ heatmaply(cor_mat_voomed,
 
 
 Visualisation of raw data (median-centred data, PAM50 genes only)
-==================
-Heatmaps of non-centred are shown in [another vignette](non_centred_heatmaps.html) within this package.
+=================================================================
+Breast cancer [has been studied extensively][Breast cancer gene expression]
+using gene expression profiling methods. This has lead to the identification of 
+a number of gene sets which stratify patients into molecular subgroups.
+One such gene set is commonly known as the [PAM50] gene set. In this example,
+we will visualise gene expression patterns using heatmaply.
 
+Centring data before performing clustering tends to result in more meaningful cluster
+assignment. This is particularly true when
+the measure of interest is the similarity in patterns across features, rather than 
+the total distance between values. Alternatively, one could use a distance measure
+which is invariant to total distance, such as correlation.
+Heatmaps of non-centred are shown in 
+[another vignette](non_centred_heatmaps.html) within this package. It can be seen
+that the concordance between the centred and non-centred heatmaps is mediocre, and 
+the clustering of triple negative samples is not as definite.
+
+In the heatmaps shown below, it is clear that samples appear to cluster more 
+clearly. Concordance with the assigned labels shown in the row annotation 
+is not complete, however this may be expected, 
+given that a different clustering method was used here (hierarchical clustering,
+rather than [k-medioids]([Partitioning around medioids])).
 
 ```{r}
 pam50_genes <- intersect(pam50_genes, rownames(raw_expression))
@@ -127,15 +158,26 @@ heatmaply(t(center_raw_mat),
 
 heatmaply_cor(cor(center_raw_mat), 
     row_side_colors = tcga_brca_clinical,
-    showticklabels = c(TRUE, FALSE),
+    showticklabels = c(FALSE, FALSE),
     main = 'correlation of raw centered pam50',
     plot_method = 'plotly')
 
 
 ```
 
-Visualisation of raw and voom-transformed data (median-centred data, PAM50 genes only)
+Visualisation of voom-transformed data (median-centred data, PAM50 genes only)
 ==================
+Following normalisation, gene expression patterns appear roughly similar. 
+This indicates that relative expression levels have not been altered unduly.
+Furthermore, slightly increased concordance with the pre-assigned cluster labels
+is observed in normalised data. It may be useful when examining expression 
+heatmaps to identify particularly high or low measures for a single
+gene in a group of patients, or a gene which shows unusually high or low variance.
+The mouse-over text available in the `heatmaply` 
+package allows visual assessment of measures of interest and quick identification
+of samples or genes with unusual gene expression patterns.
+Similarly, visualising correlation heatmaps with `heatmaply` allows the user to
+rapidly identify samples with unusually high or low pairwise correlation.
 
 
 ```{r}
@@ -149,7 +191,7 @@ voom_limits <- c(-voom_max, voom_max)
 heatmaply(t(center_voom_mat), 
     row_side_colors=tcga_brca_clinical,
     fontsize_col = 7.5,
-    showticklabels = c(FALSE, FALSE),
+    showticklabels = c(TRUE, FALSE),
     col = gplots::bluered(50),
     limits = voom_limits,
     main = 'voomed pam50',
@@ -158,12 +200,24 @@ heatmaply(t(center_voom_mat),
 
 heatmaply_cor(cor(center_voom_mat), 
     row_side_colors = tcga_brca_clinical,
-    showticklabels = c(TRUE, FALSE),
+    showticklabels = c(FALSE, FALSE),
     main = 'correlation of voomed pam50',
     plot_method = 'plotly')
 
 ```
 
+References
+==========
+- [limma]
+- [voom](https://genomebiology.biomedcentral.com/articles/10.1186/gb-2014-15-2-r29)
+- [Trimmed mean of M-component normalisation][TMM]
+- [Genomics Data Commons]
+- [PAM50]
+- [Breast cancer gene expression](https://www.ncbi.nlm.nih.gov/pubmed/28733194)
+- [Partitioning around medioids]
 
-Demonstrate outlier detection using synthetic example
-=====================================================
+[Partitioning around medioids]: https://en.wikipedia.org/wiki/K-medoids
+[Genomics Data Commons]: https://gdc.cancer.gov/
+[limma]: https://bioconductor.org/packages/release/bioc/html/limma.html
+[TMM]: https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2864565/
+[PAM50]: http://ascopubs.org/doi/abs/10.1200/jco.2008.18.1370

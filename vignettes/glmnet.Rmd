@@ -15,7 +15,7 @@ output:
 ---
 <!--
 %\VignetteEngine{knitr::rmarkdown}
-%\VignetteIndexEntry{Using heatmaply with biological data}
+%\VignetteIndexEntry{Using heatmaply with glmnet}
 -->
 
 
@@ -97,7 +97,10 @@ also be noted that it can be difficult to identify features which are being
 retained in the model, particularly when there are large numbers of features.
 heatmaply allows a similarly useful visualisation of coefficient magnitude 
 against , but in this case it may be easier to identify coefficients which 
-have interesting behaviour over the range of lambda values used.
+have interesting behaviour over the range of lambda values used. In the present
+example, feature names are meaningless, however using this method with real data
+would allow the user to rapidly identify features which are being retained,
+or features which appear to be unstable (due to changing coefficient sign).
 
 
 ```{r}
@@ -110,3 +113,12 @@ heatmaply(beta2, dendrogram="row",
     main = "Heatmap of LASSO model coefficients over range of lambda values")
 
 ```
+
+References
+==========
+- [glmnet R package](https://cran.r-project.org/web/packages/glmnet/index.html)
+- [Cox proportional hazards model](https://en.wikipedia.org/wiki/Proportional_hazards_model)
+- [Ridge regression](https://en.wikipedia.org/wiki/Tikhonov_regularization)
+- [Ridge regression and the LASSO (discussion)](http://statweb.stanford.edu/~tibs/sta305files/Rudyregularization.pdf)
+- [LASSO](http://statweb.stanford.edu/~tibs/lasso.html)
+- [Elastic net](http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.124.4696)
