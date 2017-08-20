@@ -52,9 +52,10 @@ knitr::opts_chunk$set(
 #  
 #  
 #  
-#  clinical_cols <- c('subtype_ER.Status', 'subtype_PR.Status',
-#      'subtype_HER2.Final.Status',
-#      'subtype_Integrated.Clusters..with.PAM50.'
+#  clinical_cols <- c('subtype_Integrated.Clusters..with.PAM50.',
+#      'subtype_ER.Status',
+#      'subtype_PR.Status',
+#      'subtype_HER2.Final.Status'
 #  )
 #  
 #  ## Only interested in those which have all subtypes.

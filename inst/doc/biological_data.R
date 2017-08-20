@@ -14,7 +14,7 @@ cor_mat_raw_logged <- cor(log2(raw_expression + 0.5))
 
 heatmaply(cor_mat_raw_logged, 
     row_side_colors = tcga_brca_clinical,
-    main = 'log2 Count data correlation',
+    main = 'Sample-sample correlation, log2 counts',
     showticklabels = c(FALSE, FALSE),
     plot_method = 'plotly')
 
@@ -25,7 +25,7 @@ cor_mat_voomed <- cor(voomed_expression)
 
 heatmaply(cor_mat_voomed, 
     row_side_colors = tcga_brca_clinical,
-    main = 'log2 cpm data correlation',
+    main = 'Sample-sample correlation, log2 CPM',
     showticklabels = c(FALSE, FALSE),
     plot_method = 'plotly')
 
@@ -47,7 +47,7 @@ heatmaply(t(center_raw_mat),
     showticklabels = c(FALSE, FALSE),
     fontsize_col = 7.5,
     col = gplots::bluered(50),
-    main = 'raw centered pam50',
+    main = 'Centred log2 read counts, PAM50 genes',
     limits = raw_limits,
     plot_method = 'plotly')
 
@@ -55,7 +55,7 @@ heatmaply(t(center_raw_mat),
 heatmaply_cor(cor(center_raw_mat), 
     row_side_colors = tcga_brca_clinical,
     showticklabels = c(FALSE, FALSE),
-    main = 'correlation of raw centered pam50',
+    main = 'Sample-sample correlation based on centred, log2 PAM50 read counts',
     plot_method = 'plotly')
 
 
@@ -74,14 +74,14 @@ heatmaply(t(center_voom_mat),
     showticklabels = c(TRUE, FALSE),
     col = gplots::bluered(50),
     limits = voom_limits,
-    main = 'voomed pam50',
+    main = 'Normalised, centred log2 CPM, PAM50 genes',
     plot_method = 'plotly')
 
 
 heatmaply_cor(cor(center_voom_mat), 
     row_side_colors = tcga_brca_clinical,
     showticklabels = c(FALSE, FALSE),
-    main = 'correlation of voomed pam50',
+    main = 'Sample-sample correlation based on centred, normalised PAM50 gene expression',
     plot_method = 'plotly')
 
 

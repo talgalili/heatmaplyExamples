@@ -17,7 +17,8 @@ Imports:
     TCGAbiolinks,
     SummarizedExperiment,
     biomaRt,
-    glmnet
+    glmnet,
+    limma
 Suggests:
     webshot
 VignetteBuilder: knitr

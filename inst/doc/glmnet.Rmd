@@ -64,6 +64,12 @@ and Cox proportional hazards models. In this instance, we will examine some simp
 plots using Cox proportional hazards models, though the techniques described 
 herein may be applied to any form of elastic net regression.
 
+Lambda plot from `glmnet` package
+=================================
+First, we must generate a set of penalised regression models. To do this, we
+may use example data from the `glmnet` package. In order to visualise the 
+coefficients selected, we can generate plots of coefficient magnitude against
+the lambda parameter.
 
 ```{r}
 suppressPackageStartupMessages(library(glmnet))
@@ -76,7 +82,7 @@ fit1 <- glmnet(x, y,
   nlambda=500, 
   alpha=0)
 
-## Visualise coefficients
+## Visualise coefficients at different values of lambda
 plot(fit1, "lambda")
 
 
@@ -87,21 +93,39 @@ fit2 <- glmnet(x, y,
   nlambda=500, 
   alpha=1)
 
-## Visualise coefficients
+## Visualise coefficients at different values of lambda
 plot(fit2, "lambda")
 
 ```
 
-It is worth noting that this is a very useful visualisation. However it should
-also be noted that it can be difficult to identify features which are being 
-retained in the model, particularly when there are large numbers of features.
-heatmaply allows a similarly useful visualisation of coefficient magnitude 
-against , but in this case it may be easier to identify coefficients which 
+It is worth noting that this is a very useful visualisation. In LASSO
+models, one may observe how many coeffients drop off at different values
+of lambda, which may indicate whether some subset of these holds most
+of the predictive power within initial predictor set. 
+However it should also be noted that it can be difficult to identify 
+features which are being retained in the model, particularly when there are 
+large numbers of features. 
+In ridge regression models,
+one may see the relative magnitudes of different predictors. However,
+overplotting is very common as coefficients may take similar paths 
+through lambda space.
+
+
+`heatmaply` plot of coefficients against lambda
+===============================================
+
+`heatmaply` allows a similarly useful visualisation of coefficient magnitude 
+against lambda values, 
+but in this case it may be easier to identify coefficients which 
 have interesting behaviour over the range of lambda values used. In the present
 example, feature names are meaningless, however using this method with real data
 would allow the user to rapidly identify features which are being retained,
 or features which appear to be unstable (due to changing coefficient sign).
-
+The user may zoom to see individual values, and row annotations could be added
+to show extra information about the included predictors.
+In the case of large matrices (large numbers of features and/or lambda values), 
+it is useful to disable clustering. In this instance, we will retain row clustering
+in order to show similar coefficients together.
 
 ```{r}
 beta1 <- as.matrix(fit1$beta)
@@ -113,6 +137,7 @@ heatmaply(beta2, dendrogram="row",
     main = "Heatmap of LASSO model coefficients over range of lambda values")
 
 ```
+
 
 References
 ==========

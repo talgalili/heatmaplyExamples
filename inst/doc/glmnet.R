@@ -20,7 +20,7 @@ fit1 <- glmnet(x, y,
   nlambda=500, 
   alpha=0)
 
-## Visualise coefficients
+## Visualise coefficients at different values of lambda
 plot(fit1, "lambda")
 
 
@@ -31,7 +31,7 @@ fit2 <- glmnet(x, y,
   nlambda=500, 
   alpha=1)
 
-## Visualise coefficients
+## Visualise coefficients at different values of lambda
 plot(fit2, "lambda")
 
 

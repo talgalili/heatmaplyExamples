@@ -22,14 +22,14 @@ heatmaply(t(log_raw_mat),
     showticklabels = c(TRUE, FALSE),
     fontsize_col = 7.5,
     col = gplots::bluered(50),
-    main = 'raw pam50',
+    main = 'Pre-normalisation log2 counts, PAM50 genes',
     plot_method = 'plotly')
 
 
 heatmaply_cor(cor(log_raw_mat), 
     row_side_colors = tcga_brca_clinical,
     showticklabels = c(FALSE, FALSE),
-    main = 'correlation of raw pam50',
+    main = 'Sample-sample correlation based on log2-transformed PAM50 gene expression',
     plot_method = 'plotly')
 
 
@@ -40,14 +40,14 @@ heatmaply(t(voomed_pam50_expression),
     showticklabels = c(TRUE, FALSE),
     fontsize_col = 7.5,
     col = gplots::bluered(50),
-    main = 'voomed pam50',
+    main = 'Normalised log2 CPM, PAM50 genes',
     plot_method = 'plotly')
 
 
 heatmaply_cor(cor(voomed_pam50_expression), 
     row_side_colors = tcga_brca_clinical,
     showticklabels = c(FALSE, FALSE),
-    main = 'correlation of voomed pam50',
+    main = 'Sample-sample correlation based on normalised PAM50 gene expression',
     plot_method = 'plotly')
 
 
