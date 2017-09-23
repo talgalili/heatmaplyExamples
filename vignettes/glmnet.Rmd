@@ -147,3 +147,12 @@ References
 - [Ridge regression and the LASSO (discussion)](http://statweb.stanford.edu/~tibs/sta305files/Rudyregularization.pdf)
 - [LASSO](http://statweb.stanford.edu/~tibs/lasso.html)
 - [Elastic net](http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.124.4696)
+
+
+
+
+
+```{r}
+sessionInfo()
+```
+

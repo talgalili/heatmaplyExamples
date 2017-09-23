@@ -15,7 +15,7 @@ output:
 ---
 <!--
 %\VignetteEngine{knitr::rmarkdown}
-%\VignetteIndexEntry{Using heatmaply with biological data}
+%\VignetteIndexEntry{Using heatmaply with biological data - preprocessing}
 -->
 
 
@@ -122,3 +122,10 @@ voomed_expression <- as.matrix(voom(expression))
 raw_expression <- expression
 
 ```
+
+
+
+```{r}
+sessionInfo()
+```
+

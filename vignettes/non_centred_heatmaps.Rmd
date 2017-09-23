@@ -83,3 +83,12 @@ heatmaply_cor(cor(voomed_pam50_expression),
 
 
 ```
+
+
+
+
+
+```{r}
+sessionInfo()
+```
+

@@ -40,10 +40,7 @@ Introduction
 
 This vignette is intended to provide an overview of the use of
 `heatmaply` in the analysis of biological data. In particular, 
-this vignette deals with its use to visualise gene expression 
-patterns and sample relationships in 
-RNAseq data relating to breast cancer samples,
-as retrieved from from [Genomic Data Commons].
+this vignette deals with its use to visualise gene expression patterns and sample relationships in RNAseq data relating to breast cancer samples, as retrieved from from [Genomic Data Commons].
 
 
 Data retrieval and pre-processing
@@ -228,3 +225,11 @@ References
 [PAM50]: http://ascopubs.org/doi/abs/10.1200/jco.2008.18.1370
 [Genomic Data Commons]: https://gdc.cancer.gov/
 [data preprocessing vignette]: data_preprocessing.html
+
+
+
+
+```{r}
+sessionInfo()
+```
+

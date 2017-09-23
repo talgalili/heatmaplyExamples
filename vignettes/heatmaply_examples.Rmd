@@ -629,3 +629,11 @@ heatmaply(sqrt(d2), Colv = NULL, hclust_method = "average",
 save.image("example.Rdata")
 ```
 
+
+
+
+
+```{r}
+sessionInfo()
+```
+
