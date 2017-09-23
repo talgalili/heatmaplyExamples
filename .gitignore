@@ -3,7 +3,6 @@
 .RData
 TODO.txt
 lib
-*.html
 vignettes/.build.timestamp
 *.jpeg
 GDC*
