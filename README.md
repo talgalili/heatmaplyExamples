@@ -43,6 +43,7 @@ To run the examples from this repo, first install the following packages:
 ```r
 install.packages("plotly")
 install.packages('heatmaply')
+install.packages('devtools')
 
 # In order to fully replicate the examples here, you will also need to install the following packages:
 
