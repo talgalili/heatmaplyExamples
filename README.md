@@ -103,11 +103,6 @@ You are welcome to:
 * compose a friendly e-mail to: <tal.galili@gmail.com>
 
 
-## Latest news
-
-You can see the most recent changes to the package in the [NEWS.md file](https://github.com/talgalili/heatmaplyExamples/blob/master/NEWS.md)
-
-
 
 
 
