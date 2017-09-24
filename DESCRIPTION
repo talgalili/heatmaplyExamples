@@ -1,8 +1,8 @@
 Package: heatmaplyExamples
 Type: Package
 Title: 'Heatmaply' Examples 
-Version: 0.1.0
-Date: 2017-06-01
+Version: 0.2.0
+Date: 2017-09-24
 Authors@R: c(person("Tal", "Galili", role = c("aut", "cre", "cph"), email =
     "tal.galili@gmail.com", comment = "https://www.r-statistics.com"),
     person("Alan", "O'Callaghan", comment = "https://github.com/Alanocallaghan",role = "ctb"),
@@ -13,13 +13,12 @@ Depends:
     R (>= 3.0.0),
     plotly (>= 4.6.0),
     heatmaply
-Imports:
-    TCGAbiolinks,
+Suggests:
     SummarizedExperiment,
     biomaRt,
     glmnet,
-    limma
-Suggests:
+    limma,
+    TCGAbiolinks,
     webshot
 VignetteBuilder: knitr
 License: GPL-2 | GPL-3
