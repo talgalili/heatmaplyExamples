@@ -1,5 +1,5 @@
 ---
-title: "Using heatmaply with glmnet"
+title: "Using heatmaply for visualizing glmnet coefficient path"
 author: "Alan O'Callaghan"
 date: "`r Sys.Date()`"
 output:
@@ -15,7 +15,7 @@ output:
 ---
 <!--
 %\VignetteEngine{knitr::rmarkdown}
-%\VignetteIndexEntry{Using heatmaply with glmnet}
+%\VignetteIndexEntry{Using heatmaply for visualizing glmnet coefficient path}
 -->
 
 

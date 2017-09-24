@@ -1,5 +1,5 @@
 ---
-title: "Using heatmaply with biological data (gene expression data)"
+title: "Using heatmaply with gene expression data"
 author: "Alan O'Callaghan"
 date: "`r Sys.Date()`"
 output:
@@ -15,7 +15,7 @@ output:
 ---
 <!--
 %\VignetteEngine{knitr::rmarkdown}
-%\VignetteIndexEntry{Using heatmaply with biological data}
+%\VignetteIndexEntry{Using heatmaply with gene expression data}
 -->
 
 
