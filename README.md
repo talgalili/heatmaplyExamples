@@ -19,7 +19,7 @@ This package is still under active development. If you have examples you would l
 
 ## Introduction
 
-The [https://github.com/talgalili/heatmaply/](heatmaply) R package facilitates the creation of interactive heatmaps which allow the inspection of specific value by hovering the mouse over a cell, as well as zooming into a region of the heatmap by dragging a rectangle around the relevant area.
+The [heatmaply](https://github.com/talgalili/heatmaply/) R package facilitates the creation of interactive heatmaps which allow the inspection of specific value by hovering the mouse over a cell, as well as zooming into a region of the heatmap by dragging a rectangle around the relevant area.
 
 The heatmaplyExamples package hosts examples of using heatmaply on real-world datasets and use-cases. Due to the size of some of the datasets, and resulting vignettes, this package will only be available through this github. 
 
@@ -41,12 +41,8 @@ The following examples are available within the package. You may also view them 
 To run the examples from this repo, first install the following packages:
 
 ```r
-install.packages("tidyverse")
 install.packages("plotly")
 install.packages('heatmaply')
-install.packages('glmnet')
-
-
 
 # In order to fully replicate the examples here, you will also need to install the following packages:
 
@@ -57,12 +53,12 @@ biocLite("biomaRt")
 biocLite("limma")   
 biocLite("voom")
 biocLite("TCGAbiolinks")
-
-
+install.packages("tidyverse")
+install.packages('glmnet')
 ```
 
 
-And then you may install/load the package using:
+And then you may install/load the package using (this may take a bit, since the package is several tens of megabytes):
 
 ```r
 devtools::install_github("talgalili/heatmaplyExamples", build_vignettes = TRUE)
