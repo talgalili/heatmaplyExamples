@@ -3,6 +3,8 @@
 
 ## heatmaply status
 
+https://github.com/talgalili/heatmaply/
+
 [![Build Status](https://travis-ci.org/talgalili/heatmaply.png?branch=master)](https://travis-ci.org/talgalili/heatmaply)
 [![codecov.io](https://codecov.io/github/talgalili/heatmaply/coverage.svg?branch=master)](https://codecov.io/github/talgalili/heatmaply?branch=master)
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/heatmaply)](https://cran.r-project.org/package=heatmaply)
@@ -17,7 +19,7 @@ This package is still under active development. If you have examples you would l
 
 ## Introduction
 
-The <https://github.com/talgalili/heatmaply/>(heatmaply) R package facilitates the creation of interactive heatmaps which allow the inspection of specific value by hovering the mouse over a cell, as well as zooming into a region of the heatmap by dragging a rectangle around the relevant area.
+The [https://github.com/talgalili/heatmaply/](heatmaply) R package facilitates the creation of interactive heatmaps which allow the inspection of specific value by hovering the mouse over a cell, as well as zooming into a region of the heatmap by dragging a rectangle around the relevant area.
 
 The heatmaplyExamples package hosts examples of using heatmaply on real-world datasets and use-cases. Due to the size of some of the datasets, and resulting vignettes, this package will only be available through this github. 
 
