@@ -1,7 +1,7 @@
 ---
-title: Data pre-processing
-date: "`r Sys.Date()`"
+title: "Using heatmaply with gene expression data - preprocessing"
 author: "Alan O'Callaghan"
+date: "`r Sys.Date()`"
 output:
   html_document:
     self_contained: yes
@@ -15,7 +15,7 @@ output:
 ---
 <!--
 %\VignetteEngine{knitr::rmarkdown}
-%\VignetteIndexEntry{Using heatmaply with biological data - preprocessing}
+%\VignetteIndexEntry{Using heatmaply with gene expression data - preprocessing}
 -->
 
 

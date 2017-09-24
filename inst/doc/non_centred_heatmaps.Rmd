@@ -1,5 +1,5 @@
 ---
-title: "Non-centred RNAseq heatmaps (PAM50 genes)"
+title: "Using heatmaply with non-centred RNAseq heatmaps (PAM50 genes)"
 author: "Alan O'Callaghan"
 date: "`r Sys.Date()`"
 output:
@@ -15,7 +15,7 @@ output:
 ---
 <!--
 %\VignetteEngine{knitr::rmarkdown}
-%\VignetteIndexEntry{Non-centred RNAseq heatmaps (PAM50 genes)}
+%\VignetteIndexEntry{Using heatmaply with non-centred RNAseq heatmaps (PAM50 genes)}
 -->
 
 
