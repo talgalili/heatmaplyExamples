@@ -1,6 +1,4 @@
 ## ---- echo = FALSE, message = FALSE--------------------------------------
-library(heatmaply)
-library(heatmaplyExamples)
 library(knitr)
 knitr::opts_chunk$set(
    # cache = TRUE,
@@ -10,16 +8,22 @@ knitr::opts_chunk$set(
 
 
 ## ------------------------------------------------------------------------
+# Let's load the packages
+library(heatmaply)
+library(heatmaplyExamples)
+
+## ---- fig.width=13, fig.height=10----------------------------------------
 cor_mat_raw_logged <- cor(log2(raw_expression + 0.5))
 
 heatmaply(cor_mat_raw_logged, 
     row_side_colors = tcga_brca_clinical,
     main = 'Sample-sample correlation, log2 counts',
     showticklabels = c(FALSE, FALSE),
+    # k_row = 5, k_col = 5, limits = c(0,1),
     plot_method = 'plotly')
 
 
-## ------------------------------------------------------------------------
+## ---- fig.width=13, fig.height=10----------------------------------------
 
 cor_mat_voomed <- cor(voomed_expression)
 
@@ -46,18 +50,19 @@ heatmaply(t(center_raw_mat),
     row_side_colors = tcga_brca_clinical,
     showticklabels = c(FALSE, FALSE),
     fontsize_col = 7.5,
-    col = gplots::bluered(50),
+    col = cool_warm(100),
     main = 'Centred log2 read counts, PAM50 genes',
     limits = raw_limits,
     plot_method = 'plotly')
 
 
+
+## ---- fig.width=13, fig.height=10----------------------------------------
 heatmaply_cor(cor(center_raw_mat), 
     row_side_colors = tcga_brca_clinical,
     showticklabels = c(FALSE, FALSE),
     main = 'Sample-sample correlation based on centred, log2 PAM50 read counts',
     plot_method = 'plotly')
-
 
 
 ## ------------------------------------------------------------------------
@@ -72,11 +77,13 @@ heatmaply(t(center_voom_mat),
     row_side_colors=tcga_brca_clinical,
     fontsize_col = 7.5,
     showticklabels = c(TRUE, FALSE),
-    col = gplots::bluered(50),
+    col = cool_warm(50),
     limits = voom_limits,
     main = 'Normalised, centred log2 CPM, PAM50 genes',
     plot_method = 'plotly')
 
+
+## ---- fig.width=13, fig.height=10----------------------------------------
 
 heatmaply_cor(cor(center_voom_mat), 
     row_side_colors = tcga_brca_clinical,
@@ -84,4 +91,7 @@ heatmaply_cor(cor(center_voom_mat),
     main = 'Sample-sample correlation based on centred, normalised PAM50 gene expression',
     plot_method = 'plotly')
 
+
+## ------------------------------------------------------------------------
+sessionInfo()
 

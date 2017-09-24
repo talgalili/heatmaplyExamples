@@ -15,7 +15,7 @@ output:
 ---
 <!--
 %\VignetteEngine{knitr::rmarkdown}
-%\VignetteIndexEntry{Using heatmaply with biological data}
+%\VignetteIndexEntry{Using heatmaply with biological data - preprocessing}
 -->
 
 
@@ -37,6 +37,8 @@ Introduction
 This vignette details the data pre-processing steps undertaken on the breast
 cancer RNAseq data utilised in the main [biological data](biological_data.html)
 vignette in this package.
+
+In order to recreate the output you will need to manually run the code available in the next section.
 
 
 Data pre-processing
@@ -122,3 +124,10 @@ voomed_expression <- as.matrix(voom(expression))
 raw_expression <- expression
 
 ```
+
+
+
+```{r}
+sessionInfo()
+```
+

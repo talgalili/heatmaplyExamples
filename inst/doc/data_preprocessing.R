@@ -89,3 +89,6 @@ knitr::opts_chunk$set(
 #  raw_expression <- expression
 #  
 
+## ------------------------------------------------------------------------
+sessionInfo()
+

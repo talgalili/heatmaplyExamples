@@ -26,12 +26,21 @@ heatmaply(t(log_raw_mat),
     plot_method = 'plotly')
 
 
+
+
+## ---- fig.width=13, fig.height=10----------------------------------------
+
+
 heatmaply_cor(cor(log_raw_mat), 
     row_side_colors = tcga_brca_clinical,
     showticklabels = c(FALSE, FALSE),
     main = 'Sample-sample correlation based on log2-transformed PAM50 gene expression',
     plot_method = 'plotly')
 
+
+
+
+## ------------------------------------------------------------------------
 
 
 
@@ -44,6 +53,9 @@ heatmaply(t(voomed_pam50_expression),
     plot_method = 'plotly')
 
 
+## ---- fig.width=13, fig.height=10----------------------------------------
+
+
 heatmaply_cor(cor(voomed_pam50_expression), 
     row_side_colors = tcga_brca_clinical,
     showticklabels = c(FALSE, FALSE),
@@ -51,4 +63,6 @@ heatmaply_cor(cor(voomed_pam50_expression),
     plot_method = 'plotly')
 
 
+## ------------------------------------------------------------------------
+sessionInfo()
 

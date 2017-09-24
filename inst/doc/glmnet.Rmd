@@ -6,8 +6,8 @@ output:
   html_document:
     self_contained: yes
     toc: true
-    fig_width: 15
-    fig_height: 15
+    fig_width: 12
+    fig_height: 7
     depth: 3  # upto three depths of headings (specified by #, ## and ###)  
     number_sections: true  ## if you want number sections at each table header
     theme: yeti  # many options for theme, this one is my favorite.
@@ -37,17 +37,17 @@ Introduction
 
 Regularised regression is a form of statistical analysis commonly used within
 biological research. It is beyond the scope of the present vignette to explain
-in detail. In brief, regularisation applies a penalty term to coefficients.
+in detail. In brief, regularization applies a penalty term to coefficients.
 This may be applied in several ways. 
 
 
-LASSO (Least Absolute Selection and Shrinkage Operator), or L1 regularisation, 
+LASSO (Least Absolute Selection and Shrinkage Operator), or L1 regularization, 
 applies a penalty to the absolute value of the coefficients. 
-Increasing the degree of penalisation in this instance tends to cause 
+Increasing the degree of penalization in this instance tends to cause 
 coefficients to be reduced to zero, effectively removing those features from the
 model. 
 
-L2 regularisation, or ridge regression, applies a similar penalty to 
+L2 regularization, or ridge regression, applies a similar penalty to 
 the squared value of coefficients. In this instance, the consequence of 
 increasing the penalty term is not the removal of features, but rather the
 reduction in magnitude of all features. This can be used to reduce the variance
@@ -58,7 +58,7 @@ a combination of these two methods. The proportion of each penalty type
 applied is controlled by an `alpha` parameter, which may vary between
 zero (ridge regression) and one (LASSO). 
 
-The glmnet package implements the elastic net for many common generalised linear
+The glmnet package implements the elastic net for many common generalized linear
 models, including linear regression, logistic regression, Poisson regression,
 and Cox proportional hazards models. In this instance, we will examine some simple
 plots using Cox proportional hazards models, though the techniques described 
@@ -66,8 +66,8 @@ herein may be applied to any form of elastic net regression.
 
 Lambda plot from `glmnet` package
 =================================
-First, we must generate a set of penalised regression models. To do this, we
-may use example data from the `glmnet` package. In order to visualise the 
+First, we must generate a set of penalized regression models. To do this, we
+may use example data from the `glmnet` package. In order to visualize the 
 coefficients selected, we can generate plots of coefficient magnitude against
 the lambda parameter.
 
@@ -98,8 +98,8 @@ plot(fit2, "lambda")
 
 ```
 
-It is worth noting that this is a very useful visualisation. In LASSO
-models, one may observe how many coeffients drop off at different values
+It is worth noting that this is a very useful visualization. In LASSO
+models, one may observe how many coefficients drop off at different values
 of lambda, which may indicate whether some subset of these holds most
 of the predictive power within initial predictor set. 
 However it should also be noted that it can be difficult to identify 
@@ -114,29 +114,41 @@ through lambda space.
 `heatmaply` plot of coefficients against lambda
 ===============================================
 
-`heatmaply` allows a similarly useful visualisation of coefficient magnitude 
+`heatmaply` allows a similarly useful visualization of coefficient magnitude 
 against lambda values, 
 but in this case it may be easier to identify coefficients which 
-have interesting behaviour over the range of lambda values used. In the present
+have interesting behavior over the range of lambda values used. In the present
 example, feature names are meaningless, however using this method with real data
 would allow the user to rapidly identify features which are being retained,
 or features which appear to be unstable (due to changing coefficient sign).
 The user may zoom to see individual values, and row annotations could be added
 to show extra information about the included predictors.
 In the case of large matrices (large numbers of features and/or lambda values), 
-it is useful to disable clustering. In this instance, we will retain row clustering
+it is useful to disable clustering of the columns (lambda). In this instance, we will retain row clustering
 in order to show similar coefficients together.
 
-```{r}
+```{r, warning=FALSE}
 beta1 <- as.matrix(fit1$beta)
 heatmaply(beta1, dendrogram="row",
-  main = "Heatmap of ridge regression model coefficients over range of lambda values")
-
-beta2 <- as.matrix(fit2$beta)
-heatmaply(beta2, dendrogram="row",
-    main = "Heatmap of LASSO model coefficients over range of lambda values")
+  main = "Heatmap of ridge regression model coefficients over range of lambda values",
+  margins = c(50,40),
+  limits = c(-max(abs(beta1)), max(abs(beta1))), # to make sure 0 is in the center of the colors
+  col = cool_warm, grid_gap = 0.5, k_row = 5
+  )
 
 ```
+
+```{r, warning=FALSE}
+beta2 <- as.matrix(fit2$beta)
+heatmaply(beta2, dendrogram="row", plot_method = "plotly",
+    main = "Heatmap of LASSO model coefficients over range of lambda values",
+    margins = c(50,40),
+      limits = c(-max(abs(beta2)), max(abs(beta2))), # to make sure 0 is in the center of the colors
+  col = cool_warm, grid_gap = 0.5, k_row = 5
+    )
+
+```
+
 
 
 References
@@ -147,3 +159,14 @@ References
 - [Ridge regression and the LASSO (discussion)](http://statweb.stanford.edu/~tibs/sta305files/Rudyregularization.pdf)
 - [LASSO](http://statweb.stanford.edu/~tibs/lasso.html)
 - [Elastic net](http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.124.4696)
+
+
+
+
+sessionInfo
+===============
+
+```{r}
+sessionInfo()
+```
+
