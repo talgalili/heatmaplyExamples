@@ -246,6 +246,9 @@ References
 
 
 
+sessionInfo
+===============
+
 ```{r}
 sessionInfo()
 ```
