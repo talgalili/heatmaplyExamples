@@ -26,11 +26,11 @@ The heatmaplyExamples package hosts examples of using heatmaply on real-world da
 
 The following examples are available within the package. You may also view them online in the following links:
 
-* [Using heatmaply with biological data](http://htmlpreview.github.com/?https://github.com/talgalili/heatmaplyExamples/blob/master/inst/doc/biological_data.html)
-* [Using heatmaply with biological data - preprocessing](http://htmlpreview.github.com/?https://github.com/talgalili/heatmaplyExamples/blob/master/inst/doc/data_preprocessing.html)
-* [Using heatmaply with non-centred RNAseq heatmaps (PAM50 genes) ](http://htmlpreview.github.com/?https://github.com/talgalili/heatmaplyExamples/blob/master/inst/doc/non_centred_heatmaps.html)
-* [Using heatmaply with glmnet](http://htmlpreview.github.com/?https://github.com/talgalili/heatmaplyExamples/blob/master/inst/doc/glmnet.html)
-* [Using heatmaply with famous data sets](http://htmlpreview.github.com/?https://github.com/talgalili/heatmaplyExamples/blob/master/inst/doc/heatmaply_examples.html)
+* [Using heatmaply with biological data](https://cdn.rawgit.com/talgalili/heatmaplyExamples/master/inst/doc/biological_data.html)
+* [Using heatmaply with biological data - preprocessing](https://cdn.rawgit.com/talgalili/heatmaplyExamples/master/inst/doc/data_preprocessing.htm)
+* [Using heatmaply with non-centred RNAseq heatmaps (PAM50 genes) ](https://cdn.rawgit.com/talgalili/heatmaplyExamples/master/inst/doc/non_centred_heatmaps.html)
+* [Using heatmaply with glmnet](https://cdn.rawgit.com/talgalili/heatmaplyExamples/master/inst/doc/glmnet.html)
+* [Using heatmaply with famous data sets](https://cdn.rawgit.com/talgalili/heatmaplyExamples/master/inst/doc/heatmaply_examples.html)
 
 
 
