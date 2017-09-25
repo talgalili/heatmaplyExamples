@@ -33,6 +33,9 @@ The following examples are available within the package. You may also view them 
 * [Using heatmaply with non-centred RNAseq heatmaps (PAM50 genes) ](https://cdn.rawgit.com/talgalili/heatmaplyExamples/master/inst/doc/non_centred_heatmaps.html)
 * [Using heatmaply for visualizing glmnet coefficient path](https://cdn.rawgit.com/talgalili/heatmaplyExamples/master/inst/doc/glmnet.html)
 * [Using heatmaply with famous data sets](https://cdn.rawgit.com/talgalili/heatmaplyExamples/master/inst/doc/heatmaply_examples.html)
+* [Using heatmaply with the measles data sets](https://cdn.rawgit.com/talgalili/heatmaplyExamples/master/inst/doc/measles.html)
+
+
 
 
 
