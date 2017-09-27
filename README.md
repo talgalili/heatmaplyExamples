@@ -37,9 +37,9 @@ The following biological examples are available and fully reproducible from with
   - [Using heatmaply to reproduce Nature (2015) Kotsyfakis et al.](https://cdn.rawgit.com/talgalili/heatmaplyExamples/master/inst/doc/reproducing_Nature_2015_Kotsyfakis.html)
   - [Using heatmaply to reproduce Nature (2015) Alfano et al.](https://cdn.rawgit.com/talgalili/heatmaplyExamples/master/inst/doc/reproducing_Nature_2015_Alfano.html)
 * Using heatmaply with gene expression data  
-  - [Using heatmaply with gene expression data - Visualization of raw and voom-transformed data (all genes)](https://cdn.rawgit.com/talgalili/heatmaplyExamples/master/inst/doc/biological_data.html)
-  - [Using heatmaply with gene expression data - Visualization of raw data (median-centered data, PAM50 genes only)](https://cdn.rawgit.com/talgalili/heatmaplyExamples/master/inst/doc/biological_data_2.html)
-  - [Using heatmaply with gene expression data - Visualization of voom-transformed data (median-centered data, PAM50 genes only)](https://cdn.rawgit.com/talgalili/heatmaplyExamples/master/inst/doc/biological_data_3.html)
+  - [Visualization of raw and voom-transformed data (all genes)](https://cdn.rawgit.com/talgalili/heatmaplyExamples/master/inst/doc/biological_data.html)
+  - [Visualization of raw data (median-centered data, PAM50 genes only)](https://cdn.rawgit.com/talgalili/heatmaplyExamples/master/inst/doc/biological_data_2.html)
+  - [Visualization of voom-transformed data (median-centered data, PAM50 genes only)](https://cdn.rawgit.com/talgalili/heatmaplyExamples/master/inst/doc/biological_data_3.html)
   - [Using heatmaply with non-centred RNAseq heatmaps (PAM50 genes) ](https://cdn.rawgit.com/talgalili/heatmaplyExamples/master/inst/doc/non_centred_heatmaps.html)
 * General examples
   - [Using heatmaply for visualizing glmnet coefficient path](https://cdn.rawgit.com/talgalili/heatmaplyExamples/master/inst/doc/glmnet.html)
