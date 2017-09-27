@@ -29,7 +29,7 @@ The heatmaplyExamples package hosts examples of using heatmaply on real-world da
 The following biological examples are available and fully reproducible from within the package. You may also view them online in the following links (the html files also include the R code for producing the figures):
 
 
-* [Introduction to heatmaply](https://cran.r-project.org/web/packages/heatmaply/vignettes/heatmaply.html)
+* [Introduction to heatmaply](https://CRAN.R-project.org/package=heatmaply/vignettes/heatmaply.html)
 * General biological examples
   - [Using heatmaply with the measles data set](https://cdn.rawgit.com/talgalili/heatmaplyExamples/master/inst/doc/measles.html)
   - [Using heatmaply with famous data sets](https://cdn.rawgit.com/talgalili/heatmaplyExamples/master/inst/doc/heatmaply_examples.html)
