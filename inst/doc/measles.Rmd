@@ -1,5 +1,5 @@
 ---
-title: "Using heatmaply with the measles data sets"
+title: "Using heatmaply with the measles data set"
 author: "Tal Galili"
 date: "`r Sys.Date()`"
 output: 
@@ -16,7 +16,7 @@ output:
 
 <!--
 %\VignetteEngine{knitr::rmarkdown}
-%\VignetteIndexEntry{Using heatmaply with the measles data sets}
+%\VignetteIndexEntry{Using heatmaply with the measles data set}
 
 -->
 
