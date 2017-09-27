@@ -19,7 +19,8 @@ Suggests:
     glmnet,
     limma,
     TCGAbiolinks,
-    webshot
+    webshot,
+    scales
 VignetteBuilder: knitr
 License: GPL-2 | GPL-3
 Encoding: UTF-8
