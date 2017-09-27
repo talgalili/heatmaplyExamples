@@ -1,5 +1,5 @@
 ---
-title: "Using heatmaply with gene expression data"
+title: "Using heatmaply with gene expression data - Visualization of raw and voom-transformed data (all genes)"
 author: "Alan O'Callaghan"
 date: "`r Sys.Date()`"
 output:
@@ -15,7 +15,7 @@ output:
 ---
 <!--
 %\VignetteEngine{knitr::rmarkdown}
-%\VignetteIndexEntry{Using heatmaply with gene expression data}
+%\VignetteIndexEntry{Using heatmaply with gene expression data - Visualization of raw and voom-transformed data (all genes)}
 -->
 
 
@@ -39,6 +39,14 @@ Introduction
 This vignette is intended to provide an overview of the use of
 `heatmaply` in the analysis of biological data. In particular, 
 this vignette deals with its use to visualize gene expression patterns and sample relationships in RNAseq data relating to breast cancer samples, as retrieved from from [Genomic Data Commons].
+
+Due to the size of the objects, this file is seperated to three fils. You can view this series in the following links:
+
+* [Using heatmaply with gene expression data - Visualization of raw and voom-transformed data (all genes)](https://cdn.rawgit.com/talgalili/heatmaplyExamples/master/inst/doc/biological_data.html)
+* [Using heatmaply with gene expression data - Visualization of raw data (median-centered data, PAM50 genes only)](https://cdn.rawgit.com/talgalili/heatmaplyExamples/master/inst/doc/biological_data_2.html)
+* [Using heatmaply with gene expression data - Visualization of voom-transformed data (median-centered data, PAM50 genes only)](https://cdn.rawgit.com/talgalili/heatmaplyExamples/master/inst/doc/biological_data_3.html)
+
+This is file 1 in the series.
 
 ```{r}
 # Let's load the packages
@@ -204,118 +212,6 @@ cor(as.vector(cor_mat_voomed) ,as.vector(cor_mat_raw_logged))
 
 
 
-
-Visualization of raw data (median-centered data, PAM50 genes only)
-=================================================================
-
-**The figures are omitted due to file size restructions on github, but can easily be reproduced by running the code below manually.**
-
-Breast cancer has been studied extensively using gene expression profiling methods (see [Breast cancer gene expression]). This has lead to the identification of a number of gene sets which stratify patients into molecular subgroups.
-One such gene set is commonly known as the [PAM50] gene set. In this example, we will visualize gene expression patterns using heatmaply.
-
-Centering data before performing clustering tends to result in more meaningful cluster
-assignment. This is particularly true when the measure of interest is the similarity in patterns across features, rather than the total distance between values. Furthermore,
-it is typically the difference between samples which is of interest, rather than the difference between measures. Non-centered data may show that all samples measure high for one variable, and low for another, while centered data shows relative differences. Alternatively, one could use a distance measure which is invariant to total distance, such as correlation. 
-Heatmaps of non-centered are shown in 
-[another vignette](non_centred_heatmaps.html) within this package. It can be seen
-that the concordance between the centered and non-centered heatmaps is mediocre, and 
-the clustering of triple negative samples is not as definite.
-
-In the heatmaps shown below, it is clear that samples appear to cluster loosely 
-based on [PAM50] subtype more than the previous examples.
-Concordance with the assigned labels shown in the row annotation 
-is not complete, however this may be expected, 
-given that a different clustering method was used here (hierarchical clustering,
-rather than [k-medioids]).
-
-
-```{r}
-pam50_genes <- intersect(pam50_genes, rownames(raw_expression))
-raw_pam50_expression <- raw_expression[pam50_genes, ]
-voomed_pam50_expression <- voomed_expression[pam50_genes, ]
-
-center_raw_mat <- cor_mat_raw_logged - 
-    apply(cor_mat_raw_logged, 1, median)
-
-raw_max <- max(abs(center_raw_mat), na.rm=TRUE)
-raw_limits <- c(-raw_max, raw_max)
-
-```
-
-
-```{r, eval = FALSE}
-
-heatmaply(t(center_raw_mat), 
-    row_side_colors = tcga_brca_clinical,
-    showticklabels = c(FALSE, FALSE),
-    fontsize_col = 7.5,
-    col = cool_warm(100),
-    main = 'Centred log2 read counts, PAM50 genes',
-    limits = raw_limits,
-    plot_method = 'plotly')
-
-
-```
-
-Note that `heatmaply_cor` is just like `heatmaply` but with defaults that are better suited for correlation matrix (limits from -1 to 1, and a cold-warm color scheme).
-
-```{r, fig.width=13, fig.height=10, eval = FALSE}
-heatmaply_cor(cor(center_raw_mat), 
-    row_side_colors = tcga_brca_clinical,
-    showticklabels = c(FALSE, FALSE),
-    main = 'Sample-sample correlation based on centred, log2 PAM50 read counts',
-    plot_method = 'plotly')
-
-```
-
-
-
-
-
-Visualization of voom-transformed data (median-centered data, PAM50 genes only)
-==================
-
-**The figures are omitted due to file size restructions on github, but can easily be reproduced by running the code below manually.**
-
-Following normalization, gene expression patterns appear roughly similar. 
-This indicates that relative expression levels have not been altered unduly.
-Furthermore, slightly increased concordance with the pre-assigned cluster labels
-is observed in normalized data. Samples appear to cluster based 
-Sample-sample correlation appears to show less concordance with row annotations 
-than clustering based on gene expression. However, the use of different
-linkage criteria or distance measures may alter the observed clusters.
-
-```{r, eval = FALSE}
-center_voom_mat <- voomed_pam50_expression - 
-    apply(voomed_pam50_expression, 1, median)
-
-voom_max <- max(abs(center_voom_mat))
-voom_limits <- c(-voom_max, voom_max)
-
-
-heatmaply(t(center_voom_mat), 
-    row_side_colors=tcga_brca_clinical,
-    fontsize_col = 7.5,
-    showticklabels = c(TRUE, FALSE),
-    col = cool_warm(50),
-    limits = voom_limits,
-    main = 'Normalised, centred log2 CPM, PAM50 genes',
-    plot_method = 'plotly')
-
-```
-
-
-
-
-```{r, fig.width=13, fig.height=10, eval = FALSE}
-
-heatmaply_cor(cor(center_voom_mat), 
-    row_side_colors = tcga_brca_clinical,
-    showticklabels = c(FALSE, FALSE),
-    main = 'Sample-sample correlation based on centred, normalised PAM50 gene expression',
-    plot_method = 'plotly')
-
-```
 
 
 
