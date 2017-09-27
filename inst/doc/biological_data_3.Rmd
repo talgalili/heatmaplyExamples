@@ -1,0 +1,146 @@
+---
+title: "Using heatmaply with gene expression data - Visualization of voom-transformed data (median-centered data, PAM50 genes only)"
+author: "Alan O'Callaghan"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    self_contained: yes
+    toc: true
+    fig_width: 12
+    fig_height: 10
+    depth: 3  # upto three depths of headings (specified by #, ## and ###)  
+    number_sections: true  ## if you want number sections at each table header
+    theme: yeti  # many options for theme, this one is my favorite.
+    highlight: tango  # specifies the syntax highlighting style
+---
+<!--
+%\VignetteEngine{knitr::rmarkdown}
+%\VignetteIndexEntry{Using heatmaply with gene expression data - Visualization of voom-transformed data (median-centered data, PAM50 genes only)}
+-->
+
+
+```{r, echo = FALSE, message = FALSE}
+library(knitr)
+knitr::opts_chunk$set(
+   # cache = TRUE,
+   dpi = 60,
+  comment = '#>',
+  tidy = FALSE)
+
+```
+**Author**: Alan O'Callaghan (alan.b.ocallaghan@gmail.com)
+
+
+
+
+Introduction
+============
+
+
+Due to the size of the objects, this file is seperated to three fils. You can view this series in the following links:
+
+* [Using heatmaply with gene expression data - Visualization of raw and voom-transformed data (all genes)](https://cdn.rawgit.com/talgalili/heatmaplyExamples/master/inst/doc/biological_data.html)
+* [Using heatmaply with gene expression data - Visualization of raw data (median-centered data, PAM50 genes only)](https://cdn.rawgit.com/talgalili/heatmaplyExamples/master/inst/doc/biological_data_2.html)
+* [Using heatmaply with gene expression data - Visualization of voom-transformed data (median-centered data, PAM50 genes only)](https://cdn.rawgit.com/talgalili/heatmaplyExamples/master/inst/doc/biological_data_3.html)
+
+This is file 3 in the series.
+
+
+
+```{r}
+# Let's load the packages
+library(heatmaply)
+library(heatmaplyExamples)
+```
+
+
+
+Visualization of voom-transformed data (median-centered data, PAM50 genes only)
+==================
+
+
+Following normalization, gene expression patterns appear roughly similar. 
+This indicates that relative expression levels have not been altered unduly.
+Furthermore, slightly increased concordance with the pre-assigned cluster labels
+is observed in normalized data. Samples appear to cluster based 
+Sample-sample correlation appears to show less concordance with row annotations 
+than clustering based on gene expression. However, the use of different
+linkage criteria or distance measures may alter the observed clusters.
+
+```{r}
+center_voom_mat <- voomed_pam50_expression - 
+    apply(voomed_pam50_expression, 1, median)
+
+voom_max <- max(abs(center_voom_mat))
+voom_limits <- c(-voom_max, voom_max)
+
+
+heatmaply(t(center_voom_mat), 
+    row_side_colors=tcga_brca_clinical,
+    fontsize_col = 7.5,
+    showticklabels = c(TRUE, FALSE),
+    col = cool_warm(50),
+    limits = voom_limits,
+    main = 'Normalised, centred log2 CPM, PAM50 genes',
+    plot_method = 'plotly')
+
+```
+
+
+
+
+```{r, fig.width=13, fig.height=10}
+
+heatmaply_cor(cor(center_voom_mat), 
+    row_side_colors = tcga_brca_clinical,
+    showticklabels = c(FALSE, FALSE),
+    main = 'Sample-sample correlation based on centred, normalised PAM50 gene expression',
+    plot_method = 'plotly')
+
+```
+
+
+
+Discussion
+==========
+It may be useful when examining expression 
+heatmaps to identify particularly high or low measures for a single
+gene in a group of patients, or a gene which shows unusually high or low variance.
+The mouse-over text available in the `heatmaply` 
+package allows visual assessment of measures of interest and quick identification
+of samples or genes with unusual gene expression patterns.
+Similarly, visualizing correlation heatmaps with `heatmaply` allows the user to
+rapidly identify samples with unusually high or low pairwise correlation.
+
+References
+==========
+- [limma]
+- [voom](https://genomebiology.biomedcentral.com/articles/10.1186/gb-2014-15-2-r29)
+- [Trimmed mean of M-component normalisation][TMM]
+- [Genomics Data Commons]
+- [PAM50]
+- [Breast cancer gene expression]
+- [Partitioning around medioids]
+
+[Partitioning around medioids]: https://en.wikipedia.org/wiki/K-medoids
+[k-medioids]: https://en.wikipedia.org/wiki/K-medoids
+[Genomics Data Commons]: https://gdc.cancer.gov/
+[limma]: https://bioconductor.org/packages/release/bioc/html/limma.html
+[TMM]: https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2864565/
+[PAM50]: http://ascopubs.org/doi/abs/10.1200/jco.2008.18.1370
+[Genomic Data Commons]: https://gdc.cancer.gov/
+[data preprocessing vignette]: data_preprocessing.html
+[voom]: https://genomebiology.biomedcentral.com/articles/10.1186/gb-2014-15-2-r29
+[Breast cancer gene expression]: https://www.ncbi.nlm.nih.gov/pubmed/28733194
+
+
+
+
+sessionInfo
+===============
+
+```{r}
+sessionInfo()
+```
+
+
