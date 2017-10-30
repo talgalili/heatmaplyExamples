@@ -31,7 +31,7 @@ The following biological examples are available and fully reproducible from with
 
 * [Introduction to heatmaply](https://CRAN.R-project.org/package=heatmaply/vignettes/heatmaply.html)
 * General biological examples
-  - [Using heatmaply with the measles data set](https://cdn.rawgit.com/talgalili/heatmaplyExamples/master/inst/doc/measles.html)
+  - [Using heatmaply with the measles data set](https://cdn.rawgit.com/talgalili/heatmaplyExamples/master/inst/doc/measles.html) ( [the final output](https://cdn.rawgit.com/talgalili/heatmaplyExamples/master/inst/doc/measles_heatmaply.html))
   - [Using heatmaply with famous data sets](https://cdn.rawgit.com/talgalili/heatmaplyExamples/master/inst/doc/heatmaply_examples.html)
 * Reproducing heatmaps from papers published in Nature
   - [Using heatmaply to reproduce Nature (2015) Kotsyfakis et al.](https://cdn.rawgit.com/talgalili/heatmaplyExamples/master/inst/doc/reproducing_Nature_2015_Kotsyfakis.html)
