@@ -254,11 +254,14 @@ to make the plot more similar to heatmap.2 using the plotly engine (this is a bi
 
 ```{r, fig.width=12, fig.height=8}
 
+library(heatmaply)
 heatmaply(sqrt(measles), Colv = NULL, hclust_method = "average", 
           fontsize_row = 8,fontsize_col = 6,
           k_row = NA, margins = c(60,50, 70,90),
           xlab = "Year", ylab = "State", main = "Project Tycho's heatmap visualization \nof the measles vaccine",
-          plot_method = "plotly", row_dend_left = TRUE
+          plot_method = "plotly", row_dend_left = TRUE,
+          file = c("measles_heatmaply.html", "measles_heatmaply.png", "measles_heatmaply.pdf"),
+          height = 550
         ) 
 
 ```
